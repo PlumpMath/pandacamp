@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import g
+from panda3d.core import Filename
 #Anytime a file is loaded into the enviroment this is that code.
+#fileSearch has been tested
 def fileSearch(file, libDir = None, exts = []):
 
     f1 = Filename.expandFrom(file)
     if f1.exists():
-#       print "Local file"
+#        print "Local file"
         return f1
 
     for e in exts:
@@ -16,7 +19,7 @@ def fileSearch(file, libDir = None, exts = []):
         f2 = Filename.expandFrom(g.pandaPath + "/" + libDir + "/" + file)
 #        print "In library"
 #        print f2
-        if (f2.exists()):
+        if f2 is not None:
             return f2
         for e in exts:
             f2.setExtension(e)
@@ -112,3 +115,9 @@ def csvUnquote(s):
     if item != "" or atStart:
         r.append(item)
     return r
+
+
+
+#f = fileSearch("panda", "Models")
+#if f is not None:
+#    print "success"
