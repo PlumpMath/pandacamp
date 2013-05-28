@@ -85,6 +85,7 @@ interpableType = ptype("interp", subtypes = [numType, P2Type, P3Type, ColorType,
 addableType = ptype("addable", subtypes = [numType, P2Type, P3Type, stringType, controlType, HPRType])
 NeverType = ptype("Never")
 EventBoolType = ptype("Event", innerTypes = [boolType])
+EventNumType = ptype("Event", innerTypes = [numType])
 EventAnyType = ptype("Event", innerTypes = [anyType])
 SoundType = ptype("Sound")
 TupleType = ptype("Tuple")

@@ -6,12 +6,9 @@ from Time import *
 from Types import *
 from Text import *
 
-class Slider:
+class Slider(Handle):
     def __init__(self, size = 1, position = None, min = 0, max = 1, pageSize = None, init = None, name = 'Slider', label = None):
-        t = getPType(name)
-        if t != stringType:
-            argTypeError(self.name, t, stringType, 'name')
-        self.name = uniqueName(name)
+        Handle.__init__(self, name = name)
         if init is None:
             init = min
         if pageSize is None:
@@ -40,19 +37,17 @@ class Slider:
             if t != P2Type:
                 argTypeError(self.name, t, P2Type, 'position')
             pos = (position.x, 0, position.y)
-        self.slider = DirectSlider(scale = .2*size, pos = pos, range = (min, max), pageSize = pageSize, value = init, command = self.setSlider)
-        self.value = SliderValue(self)
-        self.svalue = init
-        self.reactive = True
+        self.d.model = DirectSlider(scale = .2*size, pos = pos, range = (min, max), pageSize = pageSize, value = init, command = self.setSlider)
+        self.d.value = SliderValue(self)
+        self.d.svalue = init
         if label is not None:
             text(text = label, position = SP2(pos[0]-.3, pos[2]))
 
-# Doesn't need to be sustained - not reactive
     def set(self, val):
-        self.slider['value'] = val
+        self.d.model['value'] = val
 
     def setSlider(self):
-        self.svalue = self.slider['value']
+        self.d.svalue = self.d.model['value']
 
     def refresh(self):
         pass
@@ -61,9 +56,10 @@ class Slider:
     def maybeLift(self):
         self.value
 
+
 def slider(*p, **a):
     res = Slider(*p, **a)
-    return res.value
+    return res.d.value
 
 # Slider utilities
 

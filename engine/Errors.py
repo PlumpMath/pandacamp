@@ -13,7 +13,7 @@ def undefinedSignal(obj, sname):
 
 def multipleDef(obj, sname):
     print sname + " is already defined for " + obj.name
-    exit()
+    #exit()
 
 def unKnownMethod(obj, sname):
     print 'Unknown method ' + sname + ' in object ' + str(obj) + ' is not defined'
@@ -69,4 +69,8 @@ def slotInUse(obj, slot):
 
 def interpTypeError(ty):
     print "Can't interpolate values in type " + str(ty)
+    exit()
+
+def badKeyName(n):
+    print str(n) + " is not a valid key name"
     exit()

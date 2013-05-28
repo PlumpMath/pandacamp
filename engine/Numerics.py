@@ -29,9 +29,13 @@ cos       = lift(math.cos, "cos", numType1, numType)
 tan       = lift(math.tan, "tan", numType1, numType)
 atan2     = lift(math.atan2, 'atan2', numType2, numType)
 sqrt      = lift(math.sqrt, 'sqrt', numType1, numType)
+exp       = lift(math.exp, "exp", numType1, numType)
+pow       = lift(math.pow, "pow", numType2, numType)
+log       = lift(math.log, "log", numType1, numType)
 
-ceiling   = lift(math.ceil, "ceiling", numType1, numType)
-floor     = lift(math.floor, "floor", numType1, numType)
+ceiling   = lift(sCeiling, "ceiling", numType1, numType)
+floor     = lift(sFloor, "floor", numType1, numType)
+fraction  = lift(sFraction, "fraction", numType1, numType)
 # sections
 add       = lift(lambda x: lambda y: x+y, "add", numType1, fnType)
 sub       = lift(lambda x: lambda y: y-x, "sub", numType1, fnType)
@@ -58,25 +62,13 @@ move = lift(moveS, "move", infer = "interpolate")
 repeat = lift(repeatS, "repeat", infer = "interpolate")
 reverse = lift(reverseS, "reverse", infer = "interpolate")
 forever = lift(lambda i: repeatS(-1, i), "forever", infer = "interpolate")
-def stepFn(x):
-    if x < 0:
-        return 0
-    else:
-        return 1
-
-step      = lift(stepFn, 'step', numType1, numType)
+    
+P3toHPR = lift(sP3toHPR, "P3toHPR", [P3Type], HPRType)
+HPRtoP3 = lift(sHPRtoP3, "HPRtoP3", [HPRType], P3Type)
+normA = lift(sNormA, "normA", [numType], numType)
 
 def dist(x,y):
     return abs(x-y)
-
-def fraction(x):
-    return x - floor(x)
-
-def P3toHPR(p):
-    return HPR(atan2(getY(p), getX(p)) + pi/2,
-              -atan2(getZ(p), abs(P2(getX(p), getY(p)))),
-              0)
-# Not even Andy Keck knows why the - is there!
 
 
 format    = lift(lambda str, *a: str % a, "format", infer = 'format')
@@ -88,7 +80,7 @@ def staticIf(test, x, y):
         return x
     return y
 
-choose = lift(staticIf, "choose", [boolType, anyType, anyType], anyType)
+choose = lift(staticIf, "choose", infer = "choose")
 
 emptyControl = scEmptyControl
 addVal = lift(scAddVal, "addVal", [stringType, anyType, controlType], controlType)

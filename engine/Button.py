@@ -24,7 +24,7 @@ class Button(Handle):
             g.nextNW2dY = g.nextNW2dY -.1
         Handle.__init__(self, name = name)
         self.__dict__['click'] = EventMonitor(self.name)
-        self.__dict__['button'] = DirectButton(text = text, pos = (position.x, 0, position.y), scale = size*0.1, command = lambda: postEvent(self.name))
+        self.d.model = DirectButton(text = text, pos = (position.x, 0, position.y), scale = size*0.1, command = lambda: postEvent(self.name))
 
     def refresh(self):
         pass

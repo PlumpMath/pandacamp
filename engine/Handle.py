@@ -8,6 +8,7 @@ from Types import *
 from Switchers import *
 from copy import copy
 from sys import exit
+from FRP import localTimeIs
 
 # Every object uses SignalRef objects to hold reactive attributes.  Each of these has
 # a slot name and a type.  Since we don't have type inference, you have to declare the
@@ -56,7 +57,7 @@ class HandleData:
 
 class Handle:
     # Create a new signal ref and mark it for initialization
-    def __init__(self, name = 'unnamed handle', isWorld = False):
+    def __init__(self, name = 'unnamed handle', isWorld = False, duration = 0):
         d = HandleData()
         self.__dict__['d'] = d
         d.undefined = []    # Things that need to be initialized
@@ -65,10 +66,17 @@ class Handle:
         d.newswitches = []  # newly generated switchers - don't look at these at time of switch
         d.isWorld = isWorld # Need to mark the world object
         d.statics = {}
+        d.collections = []
+        d.initialized = False
+        d.zombie = False
         if isWorld:
              self.__dict__['name'] = 'world'
         else:
              self.__dict__['name'] = uniqueName(name)    # uniquify all names
+        # Add this to the list of objects currently in the world
+        g.newModels.append(self)
+        if duration != 0:
+            self.react1(localTimeIs(duration), lambda m, v: m.exit())
 
     def str(self):
         return self.name
@@ -91,6 +99,8 @@ class Handle:
         if x in self.d.statics:
             self.d.statics[x] = y
             return
+        if x == "HPR":
+            x = "hpr"  # Fix a spelling mistake
         oldval = getattr(self,x,None)
         if oldval is None:
            ref = newSignalRef(self, x, anyType)
@@ -131,19 +141,19 @@ class Handle:
         return self.__dict__['name']
     # Any object that isn't in the "models" list needs to override this.
     def exit(self):
-        models = g.models
-#        print "Exiting ", self.__dict__['name'], models
-        newModels = []
-        for m in models:
-            if m is not self:
-                newModels.append(m)
-        g.models = newModels
-        self.d.model.detachNode()
+        removeModel(self)
+        if self.d.model is not None:
+            self.d.model.detachNode()
+        for c in self.d.collections:
+            c.remove(self)
+        self.d.zombie = True
+
 
     # This is called at initialization time.  We will also need to call this
     # after a switching event.
 
     def checkSignals(self, ctxt):
+        self.d.initialized = True
 #        print "Checking signals", self.__dict__['name']
 
         self.showModel()                 # Attach to "render"
@@ -184,3 +194,12 @@ class Handle:
        switcher = When(self, condition, True, handler, True, "react1")
        self.d.newswitches.append(switcher)
        self.d.undefined.append(switcher)
+
+def removeModel(model):
+        models = g.models
+#        print "Exiting ", self.__dict__['name'], models
+        newModels = []
+        for m in models:
+            if m is not model:
+                newModels.append(m)
+        g.models = newModels

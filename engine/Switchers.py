@@ -34,7 +34,13 @@ class When:
             switched = True
             self.handler(self.handle, True)
     if self.oneShot and switched:
-        self.handle.d.switches.remove(self)
+        #self.handle.d.switches.remove(self)
+        # Remove all one-shots at once
+        s1 = []
+        for s in self.handle.d.switches:
+            if not s.oneShot:
+                s1.append(s)
+        self.handle.d.switches = s1
     return switched
   def sname():
     return self.handle.name + "." + self.sname

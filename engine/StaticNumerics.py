@@ -14,6 +14,11 @@ from Types import *
 
 pi       = math.pi
 twopi    = 2*pi
+sCeiling = math.ceil
+sFloor = math.floor
+
+def sFraction(x):
+    return x - sFloor(x)
 
 def staticLerp(t, x, y):
     return (1-t)*x + t*y
@@ -34,6 +39,11 @@ def staticLerpA(t, x, y):
             return staticLerp(t, x2-2*pi, y2)
         return staticLerp(t, x2, y2)
 
+# Normalize an angle to the -pi to pi range
+def sNormA(a):
+    a1 = a/twopi
+    a2 = twopi * (a1 - math.floor(a1))
+    return a2 if a2 <= pi else a2 - twopi
 
 # The P2 class (2-d point)
 # Note that P2 x Scalar works.  Probably not P2 / scalar though.
@@ -120,6 +130,10 @@ class SP3:
           return SP3(staticLerp(t, self.x, p2.x),
                      staticLerp(t, self.y, p2.y),
                      staticLerp(t, self.z, p2.z))
+def crossProduct(a, b):
+    return SP3(a.y * b.z - a.z * b.y,
+               a.z * b.x - a.x * b.z,
+               a.x * b.y - a.y * b.x)
 
 def normP3(p):
     a = absP3(p)
@@ -192,6 +206,16 @@ def sFirst(p):
 
 def sSecond(p):
     p.second
+    
+def sHPRtoP3(p):
+    return SP3(math.sin(p.h)* math.cos(p.p),
+        -math.cos(p.h)* math.cos(p.p), 
+        -math.sin(p.p))
+    
+def sP3toHPR(p):
+    return SHPR(math.atan2(p.y, p.x) + pi/2,
+              math.atan2(p.z, abs(SP2(p.x, p.y))),
+              0)
 
 # The P3 class, similar to P2
 
@@ -243,9 +267,14 @@ def random01():
 def random11():
     return 2*random.random()-1
 
+def randomRange(low, high = None):
+    if high is None:
+        return low * random01()
+    return low + random01()*(high-low)
+
 def randomInt(low, high = None):
     if high is None:
-        return random.randint(0, low-1)
+        return random.randint(0, low)
     return random.randint(low, high)
 
 def shuffle(choices):
@@ -256,9 +285,9 @@ def shuffle(choices):
 def sStep(x):
     if (x < 0):
         return 0
-    if (x > 1):
+    else:
         return 1
-    return x
+    
 
 def sSmoothStep(x):
     if (x < 0):

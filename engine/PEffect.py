@@ -28,6 +28,7 @@ from Color import *
 ##Kendric June09
 
 def stopIt(m, v):
+    m.stop()
     m.exit()
 def startIt(m,v):
     m.start()
@@ -77,13 +78,13 @@ def intervalRings(color = yellow, endColor = red, size = 1,poolSize = 30000,
 def likeFountainWater(color = blue, endColor = green, size = 1, poolSize = 100000,
                       birthRate = 0.0200, litterSize = 10, lifeSpanBase = 3.00,
                       terminalVelocityBase = 400.000, emissionType = "ETRADIATE",
-                      amplitude = 1.00, amplitudeSpread = 0.00, lineScaleFactor = 7.00,**args):
+                      amplitude = 1.00, amplitudeSpread = 0.00, lineScaleFactor = 7.00, radius = 0.5, **args):
   return PEffect(colorType = "headTail", particleFile = 'LikeFountainWater.py', color=color,
                       endColor = endColor,size = size, poolSize = poolSize,
                       birthRate = birthRate, litterSize = litterSize,
                       lifeSpanBase = lifeSpanBase, terminalVelocityBase = terminalVelocityBase,
                       emissionType = emissionType, amplitude = amplitude,
-                      amplitudeSpread = amplitudeSpread, lineScaleFactor = lineScaleFactor, **args)
+                      amplitudeSpread = amplitudeSpread, lineScaleFactor = lineScaleFactor, radius = radius, **args)
 
 def shakenSparkles(size = 1, poolSize = 20000, birthRate = 0.0200, litterSize = 10, 
                    lifeSpanBase = 3.00, terminalVelocityBase = 400.000, emissionType = "ETRADIATE",
@@ -164,7 +165,8 @@ class PEffect(Handle):
                 size = None, birthRate = None, poolSize = None, litterSize = None,
                 lineScaleFactor = None, lifeSpanBase = None, terminalVelocityBase = None,
                 texture = None, amplitude = None, amplitudeSpread = None,
-                emissionType = "ETRADIATE", duration = None):
+                emissionType = "ETRADIATE", radius = None, radiusSpread = None ,
+                duration = 0):
 
         """Initalizes the PEffect.
 
@@ -206,7 +208,8 @@ class PEffect(Handle):
 
         self.__dict__[name] = p
         self.particleName = name
-
+        self.d.model = p  # ???
+        
         if defaultPath:
             # print particleFile
             p.loadConfig(Filename(g.pandaPath+"/particles/"+ particleFile))
@@ -220,8 +223,10 @@ class PEffect(Handle):
                 pd.emitter.setEmissionType(BaseParticleEmitter.ETRADIATE)  #emitter type ETEXPICIT ETCUSTOM, ETRADIATE
             elif emissionType is "ETCUSTOM":
                 pd.emitter.setEmissionType(BaseParticleEmitter.ETCUSTOM)
-
+        if radius is not None:
+                    self.__dict__['radius'] = newSignalRef(self, 'radius', numType, radius)
         checkKeyType('PEffect', name, stringType, 'name')
+
         self.__dict__['position'] = newSignalRef(self, 'position', P3Type)
 #        self.__dict__['color'] = newSignalRefd(self, 'color', ColorType,color)
         
@@ -262,11 +267,12 @@ class PEffect(Handle):
         if parent is not render:
             self.__dict__['parent'] = parent.d.model
 
-        g.models.append(self)
         p.reparentTo(render)
         p.start()
         #Had to use this hack because the refresh function kept restarting the particle effects.
         self.__dict__["started"] = True
+        if duration != 0:
+            self.react1(localTimeIs(duration), lambda m, v: m.exit())
 
     def refresh(self):
         """
@@ -299,7 +305,7 @@ class PEffect(Handle):
             #had to comment this one out because it would randomly cause incredible slowdown
             #p0.setPoolSize(self.__dict__['PoolSize'].now())
             p0.setBirthRate(self.__dict__['BirthRate'].now())
-            p0.setLitterSize(self.__dict__['LitterSize'] .now())
+            p0.setLitterSize(int(self.__dict__['LitterSize'] .now()))
             #factory based settings
             pf.setLifespanBase(self.__dict__['LifeSpanBase'] .now())
             pf.setTerminalVelocityBase(self.__dict__['TerminalVelocityBase'].now())
@@ -350,3 +356,16 @@ class PEffect(Handle):
         name = self.name
         p = self.__dict__[name]
         p.reparentTo(handle.d.model)
+
+# Reaction Functions
+
+def exitScene(model, value):
+    model.exit()
+    
+def blowUp(effect = explosions, time = 2, size = 1, offset = P3(0,0,0)):
+    def r(model, value):
+        pos = model.position.now()
+        e = effect(position = pos + offset, size = size)
+        e.react1(localTimeIs(2), exitScene)
+        model.exit()
+    return r

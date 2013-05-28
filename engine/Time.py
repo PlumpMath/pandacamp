@@ -40,6 +40,7 @@ def pollGUI():
 def stepTask(task):
     g.currentTime = task.time  # The task contains the elapsed time
     # Look for models that were introduced during the previous step
+#    print g.newModels
     for newModel in g.newModels:
         newModel.checkSignals(g.currentTime)
         newModel.d.switches = newModel.d.newswitches

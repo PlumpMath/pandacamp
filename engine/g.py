@@ -3,7 +3,10 @@
 #  import g
 
 # need platform to check os
+from __future__ import division  # Prevent integer division
 import platform
+
+
 
 # Many of these duplicate top level names ("world", "cam") but the top level
 # name shouldn't be used with the library to avoid initialization problems

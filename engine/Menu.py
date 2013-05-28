@@ -22,12 +22,12 @@ class Menu(Handle):
         if position is None:
             pos = (.95, 0, g.nextNE2dY)
             g.nextNE2dY = g.nextNE2dY - .1
-        self.__dict__['menu'] =  DirectOptionMenu(pos = (position.x,0,position.y),scale=size*0.15,items=items, command=lambda v: postEvent(self.name, v))
+        self.d.model =  DirectOptionMenu(pos = (position.x,0,position.y),scale=size*0.15,items=items, command=lambda v: postEvent(self.name, v))
 
     def refresh(self):
         pass
     def addItem(self, string):
-        x = self.__dict__['menu']
+        x = self.d.model
         tmp_menu = x['items']
         new_item = string
         tmp_menu.insert(-1,new_item) #add the element before add

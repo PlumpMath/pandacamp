@@ -1,13 +1,26 @@
 
-# Simple collection idea:
 
-# Add a model to the collection
-# When the model exits, remove it.  Or remove directly.
-# use an "any" to see if anything in the collection satisfies a condition
+import g
+from Time import *
+from Signal import *
+from Numerics import *
+from Types import *
+from Switchers import *
 
-# Shooting gallery:
-#  Objects have a reaction to any projectile
-#  Firing adds the object to the collection
-#  When objects hit the floor they exit and are removed from the collection
-# We seem to need a new reaction function (react / when)
-# Can we avoid n x n running signals by doing this with instantanous values?
+class Collection:
+    def __init__(self):
+        self.members = []
+    def allModels(self):
+        return self.members
+    def add(self, model):
+        self.members = [model] + self.members
+        model.d.collections = [self] + model.d.collections
+    def remove(self, model):
+        print "Removing " + repr(model)
+        newMembers = []
+        for m in self.members:
+            if not (m is model):
+                newMembers = newMembers + [m]
+        self.members = newMembers
+
+collection = Collection

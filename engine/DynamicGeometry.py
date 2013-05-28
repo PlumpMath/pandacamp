@@ -1,4 +1,7 @@
-import g
+
+# Todo: add code for surface normals
+
+from g import*
 
 from Types import *
 from Handle import *
@@ -6,8 +9,8 @@ from sys import exit
 from Model import findTexture
 
 class GeometryHandle(Handle):
-    def __init__(self, object, position=None, hpr=None, size = 1, color = None, texture = None):
-        Handle.__init__(self, name="dynamicGeometry")
+    def __init__(self, object, position=None, hpr=None, size = 1, color = None, texture = None, duration = 0):
+        Handle.__init__(self, name="dynamicGeometry", duration = duration)
         self.d.model = object
         g.nextModelId = g.nextModelId + 1
         self.d.model.setTag('rpandaid', str(g.nextModelId))
@@ -29,7 +32,7 @@ class GeometryHandle(Handle):
         if texture is not None:
           tex = loader.loadTexture(findTexture(texture))
           self.d.model.setTexture(tex)
-        g.newModels.append(self)
+
     def refresh(self):
         Handle.refresh(self)
         p = self.position.now()
@@ -66,6 +69,18 @@ class GeometryHandle(Handle):
 
 def mesh(spacePoints, texturePoints, triangles, c):
 #getV3c4t2() means 3-dimensional Vector, 4-dimensional Color and 2-dimensional Texture Coordinates.
+# c can be a list of colors, corresponding to the spacePoints
+    def zip(space, c):
+        i = 0
+        res = []
+        for p in space:
+            if getPType(c) == ColorType:
+                res.append((p, c))
+            else:
+                res.append((p, c[i]))
+                i = i + 1
+        return res
+    
     format = GeomVertexFormat.getV3c4t2()
 
 #####I believe this provides a link of some sort to the Geom.UHStatic collection of vertices.
@@ -76,9 +91,9 @@ def mesh(spacePoints, texturePoints, triangles, c):
     normal = GeomVertexWriter(vdata, 'normal')
     color = GeomVertexWriter(vdata, 'color')
     texcoord = GeomVertexWriter(vdata, 'texcoord')
-    for p in spacePoints:
-        vertex.addData3f(p.x, p.y, p.z)
-        color.addData4f(c.r, c.g, c.b, c.a)
+    for p in zip(spacePoints, c):
+        vertex.addData3f(p[0].x, p[0].y, p[0].z)
+        color.addData4f(p[1].r, p[1].g, p[1].b, p[1].a)
     for p in texturePoints:
         texcoord.addData2f(p.x, p.y)
     geom = Geom(vdata)
@@ -112,12 +127,13 @@ def mesh(spacePoints, texturePoints, triangles, c):
     nodePath.setTwoSided(True)
     return nodePath
 
-def emptyModel(color = None, position = None, hpr = None, size = None):
+def emptyModel(color = None, position = None, hpr = None, size = None, duration = 0):
     nodePath = mesh([],[], [], white)
-    result = GeometryHandle(nodePath, position, hpr, size, color, None)
+    result = GeometryHandle(nodePath, position, hpr, size, color, None, duration = duration)
     return result
 
-def triangle(p1, p2, p3, color = None, position = None, hpr = None, size = None, texture = None, texP1 = P2(0,0), texP2 = P2(1, 0), texP3 = P2(0, 1), side2 = None):
+def triangle(p1, p2, p3, color = None, position = None, hpr = None, size = None, texture = None, texP1 = P2(0,0), \
+             texP2 = P2(1, 0), texP3 = P2(0, 1), side2 = None,duration = 0):
     #checking to ensure that the second argument is an instance of the third argument
     #The first and fourth are for error handling.
     checkKeyType("triangle", p1, P3Type, "p1")
@@ -133,13 +149,18 @@ def triangle(p1, p2, p3, color = None, position = None, hpr = None, size = None,
             result.d.twoSided = True
             result.d.sideTwo = otherSide
         return result
-    result = GeometryHandle(nodePath, position, hpr, size, color, texture)
+    result = GeometryHandle(nodePath, position, hpr, size, color, texture, duration = duration)
     result.d.twoSided = False
     result.d.model.setScale(0)
     return result
 
 def rectangle(p1, p2, p3, color = None, position=None, hpr=None, size=None, texture = None, side2 = None,
-              texP1 = P2(0,0), texP2 = P2(1,0), texP3 = P2(0,1), texP4 = P2(1,1)):
+              texP1 = P2(0,0), texP2 = P2(1,0), texP3 = P2(0,1), texP4 = P2(1,1), duration = 0):
+
+    if getPType(texture)==ColorType:
+        color = texture
+        texture = None
+
     # If side2 is a string, it is interpreted as a file name in the pictures area
     # If side2 is False, the texture is one sided (invisible from the back)
     #checking to ensure that the second argument is an instance of the third argument
@@ -158,7 +179,7 @@ def rectangle(p1, p2, p3, color = None, position=None, hpr=None, size=None, text
             result.d.twoSided = True
             result.d.sideTwo = otherSide
         return result
-    result = GeometryHandle(nodePath, position, hpr, size, color, texture)
+    result = GeometryHandle(nodePath, position, hpr, size, color, texture, duration = duration)
     result.d.twoSided = False
     result.d.model.setScale(0)  # Hack - this is rendered too soon and we get 1 frame before update.  This keeps the model invisible
                                 # until the first refresh
@@ -216,14 +237,19 @@ def tetra(t1, t2, t3, t4, v1 = P3(-1, -1, -1), v2 = P3(1,-1,-1),v3 = P3(0, 1, -1
     f3.reparentTo(center)
     f4.reparentTo(center)
     return center
+#
+# This creates a single object with subobjects for each piece of the picture
+#
 
-def slicePicture(p, w, h, **a):
+def slicePicture(p,columns = 1, rows = 1, **a):
     center = emptyModel(**a)
     res = []
-    xsz = 1.0/w
-    ysz = 1.0/h
-    for x in range(w):
-        for y in range(h):
+    xsz = 1.0/columns
+    ysz = 1.0/rows
+    xi = 0
+    for x in range(columns):
+        yi = 0
+        for y in range(rows):
             ll = P2(x*xsz, y*ysz)
             lr = P2((x+1)*xsz, y*ysz)
             ul = P2(x*xsz, (y+1)*ysz)
@@ -232,7 +258,98 @@ def slicePicture(p, w, h, **a):
                           P3(2*x*xsz-1, 0, 2*(y+1)*ysz-1), texP1 = ll, texP2 = lr, texP3 = ul, texP4 = ur, texture = p)
             r.reparentTo(center)
             r.location = static(P3(2*(x+.5)*xsz-1, 0, 2*(y+.5)*ysz-1))
+            r.x = static(xi)
+            r.y = static(yi)
+            yi = yi + 1
             res.append(r)
+        xi = xi + 1
     return (center, res)
 
+#
+# This creates fragment objects that are not parented to anything
+# Spatial locations are stored in the fragments
+# This isn't smart enough to match the aspect of the picture to the generated pieces.
 
+
+def blastPicture(p,columns = 1, rows = 1, **a):
+    res = []
+    xsz = 1.0/columns
+    ysz = 1.0/rows
+    xi = 0
+    for x in range(columns):
+        yi = 0
+        for y in range(rows):
+            ll = P2(x*xsz, y*ysz)
+            lr = P2((x+1)*xsz, y*ysz)
+            ul = P2(x*xsz, (y+1)*ysz)
+            ur = P2((x+1)*xsz, (y+1)*ysz)
+            r = rectangle(P3(-xsz, 0, -ysz), P3(xsz, 0, -ysz), P3(-xsz, 0, ysz),
+                          texP1 = ll, texP2 = lr, texP3 = ul, texP4 = ur, texture = p)
+            r.location = static(P3(2*(x+.5)*xsz-1, 0, 2*(y+.5)*ysz-1))
+            r.x = static(xi)
+            r.y = static(yi)
+            yi = yi + 1
+            res.append(r)
+        xi = xi + 1
+    return res
+
+
+
+def surface(f, xmin = -10, xmax = 10, ymin = -10, ymax = 10, slices = 40, dx = None, dy = None,
+            color = None, position = None, hpr = None, size = None, texture = None, delta = 0.001):
+    def surfaceNormal(x, y):
+        p = SP3(x, y, f(x, y))
+        p1 = SP3(x + delta, y, f(x + delta, y))
+        p2 = SP3(x, y + delta, f(x, y + delta))
+        a = p1 - p
+        b = p2 - p
+        return normP3(crossProduct(a, b))
+
+    def parX(x, y):
+        return (f(x + delta, y)-f(x, y)) / delta
+ 
+    def parY(x, y):
+        return (f(x, y + delta)-f(x, y)) / delta
+    if dx is None:
+        dx = (xmax - xmin)/(slices*1.0)
+    if dy is None:
+        dy = (ymax - ymin)/(slices*1.0)
+    if getPType(texture)==ColorType:
+        color = texture
+        texture = None
+    ver = []
+    tex = []
+    tri = []
+    p = 0
+    row = int((ymax - ymin)/dy)
+    col = int((xmax - xmin)/dx)
+    for c in range(col + 1):
+        tx = c / (col + 0.0)
+        sx = tx * (xmax- xmin) + xmin
+        for r in range(row + 1):
+            ty = r / (row + 0.0)
+            sy = ty * (ymax - ymin) + ymin
+            v = SP3(sx, sy, f(sx, sy))
+            t = SP2(tx, ty)
+            ver.append(v)
+            tex.append(t)
+            if r < row and c < col:
+                t1 = [p, p + 1, p + col + 1]
+                t2 = [p + 1, p + col + 1, p + col + 2]
+                tri.extend([t1, t2])
+            p = p + 1
+    nodePath = mesh(ver, tex, tri, white)
+    result = GeometryHandle(nodePath, position, hpr, size, color, texture)
+    result.d.twoSided = False
+    result.d.model.setScale(0)
+    result.f = static(lift(f, "Surface function", numType2, numType))
+    result.normal = static(lift(surfaceNormal, "Surface Normal", numType2, numType))
+    result.dx = static(lift(parX, "X Partial", numType2, numType))
+    result.dy = static(lift(parY, "Y Partial", numType2, numType))
+    result.sNormal = static(surfaceNormal)
+    result.xmin = static(xmin)
+    result.xmax = static(xmax)
+    result.ymin = static(ymin)
+    result.ymax = static(ymax)
+    return result
+            

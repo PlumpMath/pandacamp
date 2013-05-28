@@ -24,11 +24,10 @@ class Text(Handle):
             #if t != P2Type:
             #    argTypeError(self.name, t, P2Type, 'position')
 
-        self.__dict__['t'] = OnscreenText(pos = (position.x, position.y), scale = size*0.05, fg = color.toVBase4(), mayChange = True)
-        g.models.append(self)
+        self.d.model = OnscreenText(pos = (position.x, position.y), scale = size*0.05, fg = color.toVBase4(), mayChange = True)
 
     def refresh(self):
-        self.t.setText(str(self.text.now()))
+        self.d.model.setText(str(self.text.now()))
 
 def text(*p, **k):
     return Text(*p, **k)

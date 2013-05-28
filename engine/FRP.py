@@ -42,16 +42,86 @@ class Keep(CachedSignal):
             self.active = self.s.siginit(context)
         return self.active
 
-def integral(s):
-    res = Integrator()
+def maybeAddModelToResult(res, m1, m2):
+    for (m3, m4) in res:
+        if m4 is m1 and m3 is m2:
+            return res
+    return [(m1, m2)] + res
+
+class Hit(Event):
+    def __init__(self, m1, m2, trace):
+        Event.__init__(self)
+ #       print "Hit object created: " + repr(m1) + " " + repr(m2)
+        self.m1 = m1
+        self.m2 = m2
+        self.trace = trace
+        if trace:
+            print repr(m1)
+            print repr(m2)
+
+    def refresh(self):
+        res = []
+        l1 = self.m1.allModels()
+        l2 = self.m2.allModels()
+        if self.trace:
+                print repr(l1)
+                print repr(l2)
+        for m1 in l1:
+            if m1.d.initialized:
+                for m2 in l2:
+                    if not (m1 is m2) and m2.d.initialized and not m1.d.zombie and not m2.d.zombie:
+                        if m1.touches(m2, self.trace):
+                            res = maybeAddModelToResult(res, m1, m2)
+        if res == []:
+            return None
+        else:
+            return res
+    def typecheck(self, etype):
+        return anyType  # Really a pair of models
+    # This resets the integrator when reinitialized.
+    def siginit(self, context):
+        return self
+    
+def hit(m1, m2, trace = False):   # Should check types of m1 and m2 to see if they are models or collections.
+    return Hit(m1, m2, trace)
+
+class Happen(Event):
+    def __init__(self, s):
+        Event.__init__(self)
+        self.s = maybeLift(s)
+        self.context = None
+
+    def refresh(self):
+        sval = self.s.now()
+        if sval:
+            return True
+        else:
+            return None
+    def typecheck(self, etype):
+        self.s.typecheck(boolType)
+        return EventBoolType
+    def siginit(self, context):
+        if needInit(self, context):
+            newsig = self.s.siginit(context)
+            newHap = Happen(newsig)
+            self.active = newHap
+        return self.active
+    
+def happen(boolsig, val = True):
+    return tag(val, Happen(boolsig))
+    
+def integral(s, min = None, max = None):
+    res = Integrator(min, max)
     res.s = maybeLift(s)
     return res
 
 class Integrator(CachedSignal):
-    def __init__(self):
+    def __init__(self, min = None, max = None):
         CachedSignal.__init__(self)
         self.lastTime = None
         self.context = None
+        self.imax = max
+        self.imin = min
  #        print "Created an integrator"
     def refresh(self):
         g.thunks.append(self)
@@ -63,6 +133,10 @@ class Integrator(CachedSignal):
         if self.lastTime is not None:
             deltaT = t - self.lastTime
             self.val = self.val + v * deltaT
+            if self.imin is not None:
+                self.val = max(self.val, self.imin)
+            if self.imax is not None:
+                self.val = min(self.val, self.imax)
         self.lastTime = t
     def typecheck(self, etype):
 #        print "Type checking integrator"
@@ -80,14 +154,14 @@ class Integrator(CachedSignal):
             newint = Integrator()
             newint.s = newsig
             newint.val = self.zero
+            newint.imax = self.imax
+            newint.imin = self.imin
             self.active = newint
         return self.active
 
 
 
-# TODO: an initial value based on type, type checking, a proper initializer
-
-def deriv(init, s):
+def deriv(s, init = None):
     return DerivSignal(s, init)
 
 class DerivSignal(CachedSignal):
@@ -113,9 +187,8 @@ class DerivSignal(CachedSignal):
         sigType = self.s.typecheck(addableType)
         if not addableType.implies(sigType):
             argTypeError("deriv", sigType, addableType, 2)
-        initType = getPType(self.init)
-        if initType != sigType:
-            typesMustMatch("deriv", sigType, initType)
+        if self.init is None:
+            self.init = sigType.zero
         return sigType
     def siginit(self, context):
         if needInit(self, context):
@@ -128,6 +201,7 @@ def tracker(f, s0, s, resType):
     res.s = maybeLift(s)
     return res
 # This should replace deriv someday
+# f :: State -> SignalValue -> (State, SignalValue)
 class StateMachine(CachedSignal):
     def __init__(self, initState, f, resType):
         CachedSignal.__init__(self)
@@ -141,6 +215,7 @@ class StateMachine(CachedSignal):
         self.state = newState
         return output
     def typecheck(self, etype):
+        self.s.typecheck(anyType)
         return self.resType
     def siginit(self, context):
         if needInit(self, context):
@@ -150,37 +225,39 @@ class StateMachine(CachedSignal):
             self.context = context
         return self.active
 
+def delay(iv, v, ty = P3Type):
+    return tracker(lambda st, v:  (v, st), iv, v, ty)
 # Maybe reverse these arguments ...
 
 def tag(v, s):
-    return TagSignal([v], s)
+    return TagSignal(lambda i,v1: v, s)
 
 def tags(v, s):
-    return TagSignal(v, s)
+    return TagSignal(lambda i, v1: v[i % len(v)], s)
 
+def mapE(fn, s):
+    return TagSignal(lambda i, v1: fn(v1), s)
 #  Replace the value of each happening by a constant value
 
 class TagSignal(Event):
-    def __init__(self, vals, s):
+    def __init__(self, fn, s):
         Event.__init__(self)
         self.s = maybeLift(s)
-        self.vals = vals
+        self.fn = fn
         self.i = 0
         self.context = None
     def refresh(self):
         eventVal = self.s.now()
         if eventVal is None:
             return None
-        res = self.vals[self.i % len(self.vals)]
+        res = self.fn(self.i, eventVal)
         self.i = self.i + 1
         return res
     def typecheck(self, etype):
-        # Should check type of incoming signal ...
-        t = getPType(self.vals[0])
-        return eventType(t)
+        return EventAnyType
     def siginit(self, context):
         if needInit(self, context):
-            self.active = TagSignal(self.vals, self.s.siginit(context))
+            self.active = TagSignal(self.fn, self.s.siginit(context))
             self.context = context
         return self.active
 
@@ -247,23 +324,27 @@ class Clock(CachedSignal):
         self.end = end
         self.useLocal = useLocal
         self.context = None
+        self.n = 0
     def refresh(self):
         if self.done:
-            return False
+            return None
         t = g.currentTime
         if self.useLocal:
             t = t - self.initialTime
         if t < self.nextEvent:
             return None
+        res = self.n
+        self.n = self.n = 1
         if self.step is None:
             self.done = True
         else:
             if self.end is not None and t > self.end:
                 self.done = True
             self.nextEvent = self.nextEvent + self.step
-        return True
+        return res
+    
     def typecheck(self, etype):
-        return EventBoolType
+        return EventNumType
     def siginit(self, context):
         if needInit(self, context):
             self.active = Clock(self.start, self.step, self.end, self.useLocal)
@@ -273,14 +354,17 @@ class Clock(CachedSignal):
             self.active.nextEvent = self.start
         return self.active
 
-def timeIs(t):
-    return Clock(t,None,t,False)
+def now(x):
+    return x.now()
+
+def timeIs(t, val = True):
+    return tag(val, Clock(t,None,t,False))
 
 def alarm(start = 0, end = None, step = None):
     return Clock(start, step, end, True)
 
-def localTimeIs(t):
-    return Clock(t,None,t,True)
+def localTimeIs(t, val = True):
+    return tag(val, Clock(t,None,t, True))
 
 def localAlarm(start = 0, end = None, step = None):
     return Clock(start, step, end, True)
@@ -344,3 +428,4 @@ def arr(init):
     return RArr(init, getPType(init))
 def typedArr(init, ty):
     return RArr(init, ty)
+

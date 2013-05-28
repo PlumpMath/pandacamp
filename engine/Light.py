@@ -14,17 +14,21 @@ class PLight(Handle):
             self.position.setBehavior(position)
         if color is not None:
             self.color.setBehavior(color)
-        self.__dict__['pLight'] = PointLight('plight')
-        self.__dict__['plnp'] = render.attachNewNode(self.pLight)
-        render.setLight(self.plnp)
-        g.models.append(self)
-
+        self.d.plight = PointLight('plight')
+        self.d.model = None
+        self.d.light = render.attachNewNode(self.d.plight)
+        render.setLight(self.d.light)
+    def exit(self):
+        Handle.exit(self)
+        render.clearLight(self.d.light)
+        
     def refresh(self):
         Handle.refresh(self)
         c = self.__dict__['color'].now()
-        self.__dict__['pLight'].setColor(c.toVBase4())
+        print str(c)
+        self.d.plight.setColor(c.toVBase4())
         p = self.__dict__['position'].now()
-        self.__dict__['plnp'].setPos(p.x, p.y, p.z)
+        self.d.light.setPos(p.x, p.y, p.z)
 
 class ALight(Handle):
     def __init__(self, name = 'ambientlight',  color = None):
@@ -34,14 +38,17 @@ class ALight(Handle):
         if color is not None:
             self.color.setBehavior(color)
         self.__dict__['parent'] = render
-        self.__dict__['ambientLight'] = AmbientLight( 'ambientLight' )
-        self.__dict__['ambientLightNP'] = self.parent.attachNewNode( self.ambientLight )
-        render.setLight(self.ambientLightNP)
-        g.models.append(self)
-
+        self.d.alight = AmbientLight( 'ambientLight' )
+        self.d.model = None
+        self.d.light = self.parent.attachNewNode( self.d.alight )
+        render.setLight(self.d.light)
+    def exit(self):
+        Handle.exit(self)
+        render.clearLight(self.d.light)
+        
     def refresh(self):
         c = self.color.now()
-        self.ambientLight.setColor( c.toVBase4() )
+        self.d.alight.setColor( c.toVBase4() )
 
 # Directional light has a heading but no origin
 
@@ -56,16 +63,19 @@ class DLight(Handle):
             self.hpr.setBehavior(hpr)
         if color is not None:
             self.color.setBehavior(color)
-        self.__dict__['directionalLight'] = DirectionalLight( "directionalLight" )
-        self.__dict__['directionalLightNP'] = self.parent.attachNewNode( self.directionalLight )
-        render.setLight(self.directionalLightNP)
-        g.models.append(self)
+        self.d.dlight = DirectionalLight( "directionalLight" )
+        self.d.light = self.parent.attachNewNode( self.d.dlight )
+        render.setLight(self.d.light)
+        self.d.model = None
+    def exit(self):
+        Handle.exit(self)
+        render.clearLight(self.d.light)
 
     def refresh(self):
         c = self.__dict__['color'].now()
-        self.directionalLight.setColor( c.toVBase4())
+        self.d.dlight.setColor( c.toVBase4())
         h = self.__dict__['hpr'].now()
-        self.directionalLightNP.setHpr(degrees(h.h), degrees(h.p), degrees(h.r))
+        self.d.light.setHpr(degrees(h.h), degrees(h.p), degrees(h.r))
 
 # Probably should remove some of this - keep position, color, and fov only
 # I don't see how to directly set the direction - this only seems to be able
@@ -97,29 +107,32 @@ class SLight(Handle):
         if parent is not render and parent is not camera:
             self.__dict__['parent'] = parent.d.model
 
-        self.__dict__['slight'] = Spotlight('slight')
-        self.__dict__['slight'].setColor(VBase4(1, 1, 1, 1))
-        self.__dict__['lens'] = PerspectiveLens()
+        self.d.slight = Spotlight('slight')
+        self.s.slight.setColor(VBase4(1, 1, 1, 1))
+        self.d.lens = PerspectiveLens()
 
-        self.__dict__['slight'].setLens(self.__dict__['lens'])
-        self.__dict__['slnp'] = self.parent.attachNewNode(self.slight)
+        self.d.slight.setLens(self.d.lens)
+        self.d.light = self.parent.attachNewNode(self.d.slight)
 
         if focus is not None:
-            self.slnp.lookAt(focus.d.model)
-        render.setLight(self.slnp)
-        g.models.append(self)
+            self.d.light.lookAt(focus.d.model)
+        render.setLight(self.d.light)
+
+    def exit(self):
+        Handle.exit(self)
+        render.clearLight(self.d.light)
 
     def refresh(self):
         c = self.color.now()
-        self.slight.setColor( c.toVBase4())
+        self.d.light.setColor( c.toVBase4())
         p = self.position.now()
-        self.slnp.setPos(p.x, p.y, p.z)
+        self.d.light.setPos(p.x, p.y, p.z)
         e = self.exponent.now()
-        self.slight.setExponent(e)
+        self.d.light.setExponent(e)
         f = self.fov.now()
-        self.lens.setFov(f, f)
+        self.d.lens.setFov(f, f)
         a = self.attenuation.now()
-        self.slight.setAttenuation(Vec3(a.x, a.y, a.z))
+        self.d.light.setAttenuation(Vec3(a.x, a.y, a.z))
 
     # Friendly user names
 
