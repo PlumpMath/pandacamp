@@ -57,3 +57,58 @@ def saveCSV(file, dict):
     saver.writelines(result)
     saver.close()
     return
+
+# Add string quotes when the string contains a comma
+def csvQuote(s):
+    if ',' in s:
+        r = '"'
+        for c in s:
+            if c == '"':
+                r = r + '""'
+            else:
+                r = r + c
+        r = r + '"'
+        return r
+    return s
+
+# Convert a line into a list of strings using commas to separate.  Allow items to be quoted
+# using Microsoft CSV rules
+def csvUnquote(s):
+    r = []
+    item = ""
+    quoted = False
+    q2 = False
+    atStart = True
+    for c in s:
+        if q2:
+            q2 = False
+            if c == '"':
+                item = item + '"'
+            elif c == ",":
+                r.append(item)
+                item = ""
+                atStart = True
+                quoted = False
+            else:
+                quoted = False
+        elif quoted:
+            if c == '"':
+                q2 = True
+            else:
+                item = item + c
+        else:
+            if c == ',':
+                r.append(item)
+                item = ""
+                atStart = True
+            elif atStart:
+                atStart = False
+                if c == '"':
+                    quoted = True
+                else:
+                    item = item + c
+            else:
+                item = item + c
+    if item != "" or atStart:
+        r.append(item)
+    return r
