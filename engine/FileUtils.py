@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import g
+from panda3d.core import Filename
 #Anytime a file is loaded into the enviroment this is that code.
+#fileSearch has been tested
 def fileSearch(file, libDir = None, exts = []):
 
     f1 = Filename.expandFrom(file)
     if f1.exists():
-#       print "Local file"
+# print "Local file"
         return f1
 
     for e in exts:
@@ -14,9 +17,9 @@ def fileSearch(file, libDir = None, exts = []):
             return f1
     if libDir is not None:
         f2 = Filename.expandFrom(g.pandaPath + "/" + libDir + "/" + file)
-#        print "In library"
-#        print f2
-        if (f2.exists()):
+# print "In library"
+# print f2
+        if f2 is not None:
             return f2
         for e in exts:
             f2.setExtension(e)
@@ -30,7 +33,7 @@ def loadCSV(file):
 
 
     cdict = {}
-    fileLoader = open(file,  "r")
+    fileLoader = open(file, "r")
     contents = fileLoader.read().split("\n")
     for line in contents:
             data = line.split(",")
@@ -71,7 +74,7 @@ def csvQuote(s):
         return r
     return s
 
-# Convert a line into a list of strings using commas to separate.  Allow items to be quoted
+# Convert a line into a list of strings using commas to separate. Allow items to be quoted
 # using Microsoft CSV rules
 def csvUnquote(s):
     r = []
@@ -112,3 +115,9 @@ def csvUnquote(s):
     if item != "" or atStart:
         r.append(item)
     return r
+
+
+
+#f = fileSearch("panda", "Models")
+#if f is not None:
+# print "success"
