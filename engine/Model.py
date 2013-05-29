@@ -13,30 +13,90 @@ from Numerics import *
 from Types import *
 from Switchers import *
 from Handle import *
+from FileUtils import *
+from FRP import localTimeIs
 
 # This fills in all of the defaults
+parameterCache = {}
+defaultModelParameters = {"localPosition" : P3(0,0,0),
+                          "localSize" : 1,
+                          "localOrientation" : HPR(0,0,0),
+                          "joints" : [],
+                          "animations" : None,
+                          "defaultAnimation" : None,
+                          "frame" : None,
+                          "cRadius" : 1,
+                          "cFloor" : 0,
+                          "cTop" : 1,
+                          "cType" : "cyl"}
+
+modelParameters = {"localPosition" : p3Type,
+                   "localSize" : numType,
+                   "localOrientation" : hprType,
+                   "joints" : stringListType,
+                   "animations" : stringListType,
+                   "defaultAnimation" : StringType,
+                   "frame" : numType,
+                   "cRadius" : numType,
+                   "cFloor" : numType,
+                   "cTop" : numType,
+                   "cType" : stringType}
+
+pandaParameters = { "localSize" : 0.00178,
+                    "localPosition" : P3( 0, 0.21, 0),
+                    "localOrientation" : HPR(0, 0, 0)}
 
 def modelHandle(fileName, name = None, size = None, hpr = None, position = None, color = None,
-                 localSize = 1, localPosition = P3(0,0,0), localOrientation = HPR(0,0,0),
-                 joints = [], animations = None, frame = None, control = None, texture = None):
-   res = Model(fileName, name, size, hpr, position, color, localSize, localPosition, localOrientation,
-               joints, animations, frame, control, texture)
+                 control = None, texture = None, duration = 0, collection = None):
+   res = Model(fileName, name, size, hpr, position, color,
+                control, texture, duration, collection)
    return res
 
 class Model(Handle):
-    def __init__(self, fileName, name, size, hpr, position, color, localSize, localPosition,
-                 localOrientation, joints, animations, frame, control, texture):
+    def __init__(self, fileName, name, size, hpr, position, color,
+                 control, texture, duration, collection):
         if name is None:
             name = fileName  #  Should parse off the directories
-        Handle.__init__(self, name = name)
+        Handle.__init__(self, name = name, duration = duration)
+        mFile = fileSearch(fileName, "models")
+        if mFile is None:
+            mFile = Filename("panda-model.egg.pz")
+            mParams = pandaParameters
+        elif fileName in parameterCache:
+            mParams = parameterCache[fileName]
+        else:
+            mParamFile = Filename(mFile)
+            mParamFile.setExtension("model")
+            if mParamFile.exists():
+                mParams = readDict(mParamFile, modelParameters, defaultModelParameters)
+            else:
+                mParams = defaultModelParams
+            parameterCache[fileName] = mParams
+        localPosition = mParams["localPosition"]
+        localSize = mParams["localSize"]
+        localOrientation = mParams["localOrientation"]
+        joints = mParams["joints"] # Needs conversion to array of pairs
+        animations = mParams["animations"]
+        defaultAnimation = mParams["defaultAnimation"]
+        frame = mParams["frame"]
+        cRadius = mParams["cRadius"]
+        cTop = mParams["cTop"]
+        cType = mParams["cType"]
+
         self.d.hasJoints = len(joints) != 0
         self.d.joints = joints
         self.d.jointNodes = {}
+        self.cRadius = static(cRadius)
+        self.cFloor = static(cFloor)
+        self.cTop = static(cTop)
+        self.cType = static(cType)
+        self.d.noHPR = False
+        self.d.defaultAnimation = defaultAnimation
         ctl = newSignalRefd(self, "control", controlType, scEmptyControl)
         self.__dict__["control"] = ctl
         for j,pj in joints:
             self.__dict__[j] = newSignalRefd(self, j, HPRType, HPR(0,0,0), ctl)
-        self.d.fileName = findModelFile(fileName)
+
         if self.d.hasJoints:
             if animations != None:
                 self.d.model = Actor.Actor(self.d.fileName, animations)
@@ -46,16 +106,16 @@ class Model(Handle):
                 else:
                     undefinedSignal(self, 'frame') # ????  Bad error message ...
             else:
-                self.d.model = Actor.Actor(fileName)
+                self.d.model = Actor.Actor(self.d.fileName)
             for j,pj in joints:
                 self.d.jointNodes[j] = self.d.model.controlJoint(None, "modelRoot", pj)
                 if self.d.jointNodes[j] == None:
                     print 'joint not found: ' + j
                     exit()
         else:   #  Not jointed
-            self.d.model = loader.loadModelCopy(self.d.fileName)
+            self.d.model = loader.loadModel(self.d.fileName)
             if self.d.model == None:
-                print 'Model not found: ' + fileName
+                print 'Model not found: ' + fileName  # Shouldn't happen - file was found
                 exit()
         g.nextModelId = g.nextModelId + 1
         self.d.model.setTag('rpandaid', str(g.nextModelId))
@@ -82,11 +142,16 @@ class Model(Handle):
 #        print self.hpr.signal
         if color is not None:
              self.color.setBehavior(color)
-        g.newModels.append(self)
         self.d.animPlaying = False # This initializes it so there is no animation playing.
         if texture is not None:
-          tex = loader.loadTexture(findTexture(texture))
-          self.d.model.setTexture(tex, 1)
+            tFile = fileSearch(fileName, "models", ["jpg", "gif", "png", "jpeg"])
+            if tFile is None:
+                tFile = FileName(g.pandaPath + "/pictures/default.jpg")
+            tex = loader.loadTexture(tFile)
+            self.d.model.setTexture(tex, 1)
+        if collection is not None:
+            collection.add(self)
+
     def showModel(self):
         if not self.d.onScreen:
            self.d.model.reparentTo(render)
@@ -98,13 +163,14 @@ class Model(Handle):
        s = self.size.now()
        self.d.model.setScale(s*self.d.localSize)
 #            print "Model position: " + str(p)
-       self.d.model.setPos(p.x - self.d.localPosition.x,
-                           p.y - self.d.localPosition.y,
-                           p.z - self.d.localPosition.z)
-       d = self.hpr.now()
-       self.d.model.setHpr(degrees(d.h - self.d.localOrientation.h),
-                           degrees(d.p - self.d.localOrientation.p),
-                           degrees(d.r - self.d.localOrientation.r))
+       self.d.model.setPos(p.x + self.d.localPosition.x*s,
+                           p.y + self.d.localPosition.y*s,
+                           p.z + self.d.localPosition.z*s)
+       if not self.d.noHPR:
+           d = self.hpr.now()
+           self.d.model.setHpr(degrees(d.h + self.d.localOrientation.h),
+                               degrees(d.p + self.d.localOrientation.p),
+                               degrees(d.r + self.d.localOrientation.r))
 
        c = self.color.now()
        if c.a != 0:   # This signals that there is no color to paint on the model
@@ -122,7 +188,8 @@ class Model(Handle):
                     self.d.jointNodes[j].setR(degrees(hpr.r))
                     #print self.d.jointNodes[j].getH()
                     # Set panda joint pj to hpr (convert from radians)
-               self.d.model.loop('walk', fromFrame = self.d.frame, toFrame = self.d.frame)
+               if self.d.defaultAnimation is not None:
+                self.d.model.loop(self.d.defaultAnimation, fromFrame = self.d.frame, toFrame = self.d.frame)
     def play(self, anim):
         if anim == "stop":
             self.d.animPlaying = False
@@ -132,22 +199,60 @@ class Model(Handle):
     def setTexture(self, texture):
         tex = loader.loadTexture(findTexture(texture))
         self.d.model.setTexture(tex, 1)
-    def reparentTo(self, handle):  # Doesn't seem to work!
+    def reparentTo(self, handle):
         self.d.model.reparentTo(handle.d.model)
-
-def findModelFile(file):
-    f1 = Filename.expandFrom(file)
-    if (f1.exists()):
- #       print "Local file"
-        return f1
-    f2 = Filename.expandFrom(g.pandaPath + "/models/" + file)
-#    print "In library"
- #   print f2
-    if (f2.exists()):
-        # print "Loaded from library:" + f
-        return f2
-    print "Model " + file + " not found. "
-    return "panda-model.egg.pz"
+        # This doesn't allow the HPR to modify the cylinder so it's pretty crude.
+    def touches(self, handle, trace):
+        if trace:
+           print "Touch: " + repr(self) + " (" + self.cType + ") " + repr(handle) + " (" + handle.cType + ")"
+        mr = self.cRadius*self.size.now()
+        mp = self.position.now()
+        yr = handle.cRadius*handle.size.now()
+        yp = handle.position.now()
+        if trace:
+            print repr(mp) + " [" + repr(mr) + "]  " + repr(yp) + " [" + repr(yr) + "]"
+        if self.cType == "sphere":
+            if handle.cType == "sphere":
+                return absP3(subP3(mp, yp)) < mr + yr
+            elif handle.cType == "cyl":   # Test if the x,y points are close enough.  This treats the sphere as a cylinder
+                d = absP2(subP2(P2(mp.x, mp.y), P2(yp.x, yp.y)))
+                if d > mr + yr:
+                    return False
+                else:
+                    cb = yp.z + handle.size.now()*handle.cFloor
+                    ct = yp.z + handle.size.now()*handle.cTop
+                    sb = mp.z-mr
+                    st = mp.z+mr
+ #                   print str(cb) + " " + str(ct) + " " + str(sb) + " " + str(st)
+                    return ct > sb and cb < st
+        elif self.cType == "cyl":
+            if handle.cType == "sphere":
+                d = absP2(subP2(P2(mp.x, mp.y), P2(yp.x, yp.y)))
+ #               print "c to s (dist = " + str(d) + ")"
+                if  d > mr + yr:
+                    return False
+                else:
+                    cb = mp.z + self.size.now()*self.cFloor
+                    ct = mp.z + self.size.now()*self.cTop
+                    sb = yp.z-yr
+                    st = yp.z+yr
+#                    print str(cb) + " " + str(ct) + " " + str(sb) + " " + str(st)
+                    return ct > sb and cb < st
+            elif handle.cType == "cyl":
+#                print str(mp.x) + " , " + str(mp.y)
+                d = absP2(subP2(P2(mp.x, mp.y), P2(yp.x, yp.y)))
+                if trace:
+                    print "c to c (dist = " + str(d) + ") " + str(mr+yr)
+                if  d > mr + yr:
+                    return False
+                else:
+                    res = self.cTop + mp.z > handle.cFloor + yp.z and self.cFloor + mp.z < handle.cTop + yp.z
+                    if trace:
+                        print "Result: " + str(res) + " " + str((self.cTop, mp.z, handle.cFloor, yp.z, self.cFloor, handle.cTop))
+                    return res
+        return False
+    def allModels(self):  # A collection will return more than one model
+        return [self]
 
 def findTexture(file):
     f = Filename.expandFrom(file)

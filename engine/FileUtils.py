@@ -28,38 +28,58 @@ def fileSearch(file, libDir = None, exts = []):
     return None
 
 
-#Any time a CSV is loaded into the enviroment this is that code.
+# Read a CSV file and return a matrix of strings
 def loadCSV(file):
-
-
-    cdict = {}
     fileLoader = open(file, "r")
     contents = fileLoader.read().split("\n")
+    arr = []
     for line in contents:
-            data = line.split(",")
-            key = data[0].strip()
-            name = data[1].strip()
-            value = data[2].strip()
-            cdict[key][name]= value
+        arr.append(csvUnquote(line))
     fileLoader.close()
-    result = {}
-    for key, dict in cdict.iteritems():
-        result[key] = Control(dict)
-        return result
+    return arr
 
-    print "File " + fileName + " not found."
-    exit()
-
-def saveCSV(file, dict):
-
-    result = []
-    for key1, value1 in dict.iteritems():
-     result.append(key1 + "," + value1 + "\n")
-    saver = open(fileName,"file")
-    saver.write(model.name+"\n")
-    saver.writelines(result)
+# Write a matrix of strings as a CSV
+def saveCSV(file, arr):
+    lines = []
+    for l in arr:
+        line = ""
+        first = True
+        for cell in l:
+            if not first:
+                line = line + ","
+                first = False
+            line = line + csvQuote(cell)
+        lines.add(line + "\n")
+    saver = open(file,"file")
+    saver.writelines(lines)
     saver.close()
     return
+
+# Write out a dictionary in CSV form
+def saveDict(file, dict, types = {}):
+    lines = []
+    for k,v in dict.iteritems():
+        if k in types:
+            v = types[k].encode(v)
+        lines.add([k, v])
+    saveCSV(file, lines)
+
+def loadDict(file, types={}, defaults = {}):
+    arr = loadCSV(file)
+    res = {}
+    for l in arr:
+        if len(l) == 2:
+            key = l[0]
+            val = l[1]
+            if key in types:
+                val = types[key].decode(val)
+            res[key] = val
+    for k,v in defaults:
+        if not (k in res):
+            res[k] = v
+    return res
+
+
 
 # Add string quotes when the string contains a comma
 def csvQuote(s):
