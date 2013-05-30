@@ -2,6 +2,8 @@
 
 import g
 from panda3d.core import Filename
+from Types import *
+from StaticNumerics import *
 #Anytime a file is loaded into the enviroment this is that code.
 #fileSearch has been tested
 def fileSearch(file, libDir = None, exts = []):
@@ -30,7 +32,7 @@ def fileSearch(file, libDir = None, exts = []):
 
 # Read a CSV file and return a matrix of strings
 def loadCSV(file):
-    fileLoader = open(file, "r")
+    fileLoader = open(file.toOsSpecific(), "r")
     contents = fileLoader.read().split("\n")
     arr = []
     for line in contents:
@@ -40,17 +42,17 @@ def loadCSV(file):
 
 # Write a matrix of strings as a CSV
 def saveCSV(file, arr):
-    lines = []
+    lines = ""
     for l in arr:
         line = ""
         first = True
         for cell in l:
             if not first:
                 line = line + ","
-                first = False
+            first = False
             line = line + csvQuote(cell)
-        lines.add(line + "\n")
-    saver = open(file,"file")
+        lines = lines + line + "\n"
+    saver = open(file,"w")
     saver.writelines(lines)
     saver.close()
     return
@@ -61,7 +63,7 @@ def saveDict(file, dict, types = {}):
     for k,v in dict.iteritems():
         if k in types:
             v = types[k].encode(v)
-        lines.add([k, v])
+        lines.append([k, v])
     saveCSV(file, lines)
 
 def loadDict(file, types={}, defaults = {}):
@@ -74,7 +76,7 @@ def loadDict(file, types={}, defaults = {}):
             if key in types:
                 val = types[key].decode(val)
             res[key] = val
-    for k,v in defaults:
+    for k,v in defaults.iteritems():
         if not (k in res):
             res[k] = v
     return res
@@ -136,8 +138,3 @@ def csvUnquote(s):
         r.append(item)
     return r
 
-
-
-#f = fileSearch("panda", "Models")
-#if f is not None:
-# print "success"

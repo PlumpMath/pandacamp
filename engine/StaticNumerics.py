@@ -80,6 +80,12 @@ class SP2:
 
 # Used for integration
 
+P2Type.encode = lambda p:str(p.x)+","+str(p.y)
+def readP2(str):
+    nums = parseNumbers(str)
+    return SP2(nums[0],nums[1])
+P2Type.decode = readP2
+
 P2Type.zero = SP2(0,0)
 
 # non-overloaded methods for P2 arithmentic
@@ -130,6 +136,13 @@ class SP3:
           return SP3(staticLerp(t, self.x, p2.x),
                      staticLerp(t, self.y, p2.y),
                      staticLerp(t, self.z, p2.z))
+
+P3Type.encode = lambda p:str(p.x)+","+str(p.y)+","+str(p.z)
+def readP3(str):
+    nums = parseNumbers(str)
+    return SP3(nums[0],nums[1], nums[2])
+P3Type.decode = readP3
+
 def crossProduct(a, b):
     return SP3(a.y * b.z - a.z * b.y,
                a.z * b.x - a.x * b.z,
@@ -252,6 +265,14 @@ def subHPR(a,b):
 def scaleHPR(s,a):
     return SHPR(a.h*s, a.p*s, a.r*s)
 
+HPRType.encode = lambda p:str(p.h)+","+str(p.p)+","+str(p.r)
+def readHPR(str):
+    nums = parseNumbers(str)
+    return SHPR(nums[0],nums[1], nums[2])
+HPRType.decode = readHPR
+
+P2Type.zero = SP2(0,0)
+
 P3Type.zero = SP3(0,0,0)
 HPRType.zero = SHPR(0,0,0)
 P2Type.zero = SP2(0,0)
@@ -297,3 +318,4 @@ def sSmoothStep(x):
     return x*x*(-2*x + 3)
 
 random.seed()
+

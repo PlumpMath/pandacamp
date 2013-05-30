@@ -21,10 +21,9 @@ import os, sys
 
 #pandas
 def panda(**a):#Works as of 6-23-08 ~ Kendric
-    return modelHandle(fileName = "panda-model.egg.pz", name = 'Panda',
-                       localSize = 0.00178, localPosition = P3( 0, 0.21, 0), localOrientation = HPR(0, 0, 0),
-                       cRadius = 1.0, cFloor = 0.0, cTop = 1.0, cType = 'cyl', **a)
+    return modelHandle(fileName = "panda-model.egg.pz", name = 'Panda', **a)
 
+'''
 #jointed models
 def ralph(**a):#Works as of 6-23-08 ~ Kendric
     return modelHandle("Ralph/ralph.egg", name = 'Ralph',
@@ -255,4 +254,6 @@ def sunset(**a):
 
 #def celestial(**a):   # Seems broken?
 #    return modelHandle("celestial/celestial.egg", name = "Celestial",
-#                        localSize = .016, **a)
+#                        localSize = .016, **a)'''
+
+

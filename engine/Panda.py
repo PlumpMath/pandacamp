@@ -88,3 +88,6 @@ def findClickedModels():
            return None
 
 g.findClickedModels = findClickedModels
+
+p = panda(position = P3(0,0,0))
+start()

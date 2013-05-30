@@ -30,12 +30,12 @@ defaultModelParameters = {"localPosition" : P3(0,0,0),
                           "cTop" : 1,
                           "cType" : "cyl"}
 
-modelParameters = {"localPosition" : p3Type,
+modelParameters = {"localPosition" : P3Type,
                    "localSize" : numType,
-                   "localOrientation" : hprType,
-                   "joints" : stringListType,
-                   "animations" : stringListType,
-                   "defaultAnimation" : StringType,
+                   "localOrientation" : HPRType,
+                   "joints" : StringListType,
+                   "animations" : StringListType,
+                   "defaultAnimation" : stringType,
                    "frame" : numType,
                    "cRadius" : numType,
                    "cFloor" : numType,
@@ -60,6 +60,7 @@ class Model(Handle):
         Handle.__init__(self, name = name, duration = duration)
         mFile = fileSearch(fileName, "models")
         if mFile is None:
+            print "Can't find model"
             mFile = Filename("panda-model.egg.pz")
             mParams = pandaParameters
         elif fileName in parameterCache:
@@ -67,10 +68,13 @@ class Model(Handle):
         else:
             mParamFile = Filename(mFile)
             mParamFile.setExtension("model")
+            print str(mParamFile)
             if mParamFile.exists():
-                mParams = readDict(mParamFile, modelParameters, defaultModelParameters)
+                mParams = loadDict(mParamFile, modelParameters, defaultModelParameters)
+                print "Found egg and model for " + fileName
             else:
-                mParams = defaultModelParams
+                print "No model file"
+                mParams = defaultModelParameters
             parameterCache[fileName] = mParams
         localPosition = mParams["localPosition"]
         localSize = mParams["localSize"]
@@ -81,8 +85,10 @@ class Model(Handle):
         frame = mParams["frame"]
         cRadius = mParams["cRadius"]
         cTop = mParams["cTop"]
+        cFloor = mParams["cFloor"]
         cType = mParams["cType"]
 
+        self.d.fileName = mFile
         self.d.hasJoints = len(joints) != 0
         self.d.joints = joints
         self.d.jointNodes = {}
@@ -144,10 +150,7 @@ class Model(Handle):
              self.color.setBehavior(color)
         self.d.animPlaying = False # This initializes it so there is no animation playing.
         if texture is not None:
-            tFile = fileSearch(fileName, "models", ["jpg", "gif", "png", "jpeg"])
-            if tFile is None:
-                tFile = FileName(g.pandaPath + "/pictures/default.jpg")
-            tex = loader.loadTexture(tFile)
+            tex = findTexture(texture)
             self.d.model.setTexture(tex, 1)
         if collection is not None:
             collection.add(self)
@@ -254,14 +257,8 @@ class Model(Handle):
     def allModels(self):  # A collection will return more than one model
         return [self]
 
-def findTexture(file):
-    f = Filename.expandFrom(file)
-    if (f.exists()):
-        return f
-    f = Filename.expandFrom(g.pandaPath + "/pictures/" + file)
-    if (f.exists()):
-        # print "Loaded from library:" + f
-        return f
-    print "Texture " + file + " not found."
-    f = g.pandaPath + "/pictures/default.jpg"
-    return Filename.expandFrom(f)
+def findTexture(fileName):
+    tFile = fileSearch(fileName, "models", ["jpg", "gif", "png", "jpeg"])
+    if tFile is None:
+        tFile = FileName(g.pandaPath + "/pictures/default.jpg")
+    return loader.loadTexture(tFile)

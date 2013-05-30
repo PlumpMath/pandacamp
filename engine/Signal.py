@@ -409,7 +409,6 @@ class GLiftE(Event):
 # the same type.  If t1 is anyType, then we set it to the type of t2.
 # Adding two signals that are both untyped won't work.
 
-# The following code is a poor excuse for Hindley-Milner - please be kind!
 
 def lift(f, fname, argtypes=None, restype=None, infer=None):
     def fn ( * args):
