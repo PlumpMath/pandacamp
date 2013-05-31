@@ -89,5 +89,7 @@ def findClickedModels():
 
 g.findClickedModels = findClickedModels
 
-p = panda(position = P3(0,0,0))
+p = hangGlider(position = P3(0,0,0))
+p = volleyBall(position = P3(-1,0,1))
+p = tails(position = P3(1,0,-1))
 start()
