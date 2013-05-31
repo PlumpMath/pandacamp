@@ -301,17 +301,42 @@ rbutton = g.rbutton
 rbuttonPull = g.rbuttonPull
 lbuttonPull = g.lbuttonPull
 
-def react(event, handler):
-    world.react(event, handler)
+def react(event, handler, m=None):
+    if m is None:
+        world.react(event, handler)
+    else:
+        model = event
+        event = handler
+        handler = m
+        model.react(event, handler)
 
-def react1(event, handler):
-    world.react1(event, handler)
+def react1(event, handler, m=None):
+    if m is None:
+        world.react1(event, handler)
+    else:
+        model = event
+        event = handler
+        handler = m
+        model.react1(event, handler)
 
-def when(event, handler):
-    world.when(event, handler)
+def when(event, handler, m=None):
+    if m is None:
+        world.when(event, handler)
+    else:
+        model = event
+        event = handler
+        handler = m
+        model.when(event, handler)
 
-def when1(event, handler):
-    world.when1(event, handler)
+def when1(event, handler, m=None):
+    if m is None:
+        world.when1(event, handler)
+    else:
+        model = event
+        event = handler
+        handler = m
+        model.when1(event, handler)
+
 
 def key(kname, val = True):
     kname = checkValidKey(kname)
