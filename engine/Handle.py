@@ -203,3 +203,6 @@ def removeModel(model):
             if m is not model:
                 newModels.append(m)
         g.models = newModels
+
+def exit(x):
+    x.exit()
