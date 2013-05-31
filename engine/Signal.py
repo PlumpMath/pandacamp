@@ -789,6 +789,9 @@ def interpolantInferSignal(fn, fname, args):
 time = GlobalTime()
 localTime = LocalTime()
 
+def now(x):
+    return x.now()
+
 g.add = sigadd
 g.sub = sigsub
 g.mul = sigmul
