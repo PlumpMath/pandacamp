@@ -12,7 +12,7 @@ P2        = lift(SP2, "P2", numType2, P2Type)
 p2 = P2
 
 P2Polar   = lift(SP2Polar, 'P2Polar', numType2, P2Type)
-p2polar = P2polar
+p2polar = P2Polar
 
 P3        = lift(SP3, "P3", numType3, P3Type)
 p3 = P3
@@ -71,9 +71,9 @@ move = lift(moveS, "move", infer = "interpolate")
 repeat = lift(repeatS, "repeat", infer = "interpolate")
 reverse = lift(reverseS, "reverse", infer = "interpolate")
 forever = lift(lambda i: repeatS(-1, i), "forever", infer = "interpolate")
-    
+
 P3toHPR = lift(sP3toHPR, "P3toHPR", [P3Type], HPRType)
-p3toHpr = P3toHpr
+p3toHpr = P3toHPR
 
 HPRtoP3 = lift(sHPRtoP3, "HPRtoP3", [HPRType], P3Type)
 hprToP3 = HPRtoP3
