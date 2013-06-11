@@ -10,12 +10,13 @@ from Numerics import *
 from Types import *
 from Switchers import *
 from Handle import *
+from FileUtils import *
 
 
 class Sound:
-    def __init__(self, filePath, loopCount = 1, volume = 0.5, kill = None):
+    def __init__(self, file, loopCount = 1, volume = 0.5, kill = None):
 
-        self.filePath = getSoundFile(filePath)
+        self.filePath = fileSearch(fileName, "sounds", ["wav", "mp3"])
         self.type = SoundType
         self.volume = volume
         self.loopCount = loopCount
@@ -36,18 +37,18 @@ def sound(*p, **k):
     return Sound(*p, **k)
 
 
-def getSoundFile(file):
-    f = Filename.expandFrom(file)
-    if (f.exists()):
-        return f
-    f = g.pandaPath + "/sounds/" + file
-    if (Filename.expandFrom(f).exists()):
-        # print "Loaded from library:" + f
-        return f
-    if (Filename.expandFrom(f + ".wav").exists()):
-        return f + ".wav"
-    print "Sound " + file + " not found."
-    return Filename.expandFrom(g.pandaPath + "/sounds/duck.wav")
+#def getSoundFile(file):
+    #f = Filename.expandFrom(file)
+    #if (f.exists()):
+        #return f
+    #f = g.pandaPath + "/sounds/" + file
+    #if (Filename.expandFrom(f).exists()):
+        ## print "Loaded from library:" + f
+        #return f
+    #if (Filename.expandFrom(f + ".wav").exists()):
+        #return f + ".wav"
+    #print "Sound " + file + " not found."
+    #return Filename.expandFrom(g.pandaPath + "/sounds/duck.wav")
 
 # Add a loop parameter
 def play(s):

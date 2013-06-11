@@ -1,0 +1,11 @@
+fileName,ralph.egg
+name,Ralph
+localSize,0.18,
+cRadius,0.2
+cFloor,0.0 
+cTop,1.0
+cType,cyl
+joints,neck","Neck","leftWrist","LeftWrist","rightWrist","RightWrist","jaw","Jaw","leftElbow","LeftElbow","rightShoulder","RightShoulder","leftShoulder","LeftShoulder","leftKnee","LeftKnee","rightKnee","RightKnee
+animations,walk","g.pandaPath + /models/Ralph/ralph-walk.egg
+frame = 4
+
