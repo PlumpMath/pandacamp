@@ -86,7 +86,7 @@ def likeFountainWater(color = blue, endColor = green, size = 1, poolSize = 10000
                       emissionType = emissionType, amplitude = amplitude,
                       amplitudeSpread = amplitudeSpread, lineScaleFactor = lineScaleFactor, radius = radius, **args)
 
-def shakenSparkles(size = 1, poolSize = 20000, birthRate = 0.0200, litterSize = 10, 
+def shakenSparkles(size = 1, poolSize = 20000, birthRate = 0.0200, litterSize = 10,
                    lifeSpanBase = 3.00, terminalVelocityBase = 400.000, emissionType = "ETRADIATE",
                    amplitude = 1.00, amplitudeSpread = 0.00, lineScaleFactor = 7.00, **args):
   return PEffect(particleFile = 'ShakenSparkles.py',size = size, poolSize = poolSize,
@@ -104,7 +104,7 @@ def warpSpeed(color = white, endColor = blue, size = 1, poolSize = 2000,
               terminalVelocityBase = terminalVelocityBase, emissionType = emissionType,
               amplitude = amplitude, amplitudeSpread = amplitudeSpread, lineScaleFactor = lineScaleFactor, **args)
 
-def fireish(size = 1,poolSize = 1024, birthRate = 0.0200, litterSize = 10, 
+def fireish(size = 1,poolSize = 1024, birthRate = 0.0200, litterSize = 10,
             lifeSpanBase = 0.50, terminalVelocityBase = 4000.000, emissionType = "ETRADIATE",
             amplitude = 1.00, amplitudeSpread = 0.00, lineScaleFactor = 1.00, texture = "fire.png",**args):
   return PEffect(colorType = "image", particleFile = 'fireish.py', size = size,
@@ -209,7 +209,7 @@ class PEffect(Handle):
         self.__dict__[name] = p
         self.particleName = name
         self.d.model = p  # ???
-        
+
         if defaultPath:
             # print particleFile
             p.loadConfig(Filename(g.pandaPath+"/particles/"+ particleFile))
@@ -229,7 +229,7 @@ class PEffect(Handle):
 
         self.__dict__['position'] = newSignalRef(self, 'position', P3Type)
 #        self.__dict__['color'] = newSignalRefd(self, 'color', ColorType,color)
-        
+
         self.__dict__['hpr'] = newSignalRefd(self, 'hpr', HPRType, HPR(0,0,0))
         self.__dict__['size'] = newSignalRefd(self, 'size', numType, 1)
         if size is not None:
@@ -292,7 +292,7 @@ class PEffect(Handle):
               pr.setStartColor(self.__dict__['color'].now().toVBase4())
               pr.setEndColor(self.__dict__['endColor'].now().toVBase4())
             elif self.d.colorType == "headTail":
-              
+
               pr.setHeadColor(self.__dict__['color'].now().toVBase4())
               pr.setTailColor(self.__dict__['endColor'].now().toVBase4())
     #        if self.lineScaleFactor is not None:
@@ -361,7 +361,7 @@ class PEffect(Handle):
 
 def exitScene(model, value):
     model.exit()
-    
+
 def blowUp(effect = explosions, time = 2, size = 1, offset = P3(0,0,0)):
     def r(model, value):
         pos = model.position.now()

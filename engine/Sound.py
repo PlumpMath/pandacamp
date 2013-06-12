@@ -16,7 +16,7 @@ from FileUtils import *
 class Sound:
     def __init__(self, file, loopCount = 1, volume = 0.5, kill = None):
 
-        self.filePath = fileSearch(fileName, "sounds", ["wav", "mp3"])
+        self.filePath = fileSearch(file, "sounds", ["wav", "mp3"]).toOsSpecific()
         self.type = SoundType
         self.volume = volume
         self.loopCount = loopCount

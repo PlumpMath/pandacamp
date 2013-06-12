@@ -9,8 +9,8 @@ def f(m, x):
     m(position = p3(x, 0, 0), hpr = hpr(time, 0, 0))
 
 f(panda, 2)
-f(ralph, 1)
+f(penguin, 1)
 f(balloonBoy, 0)
-f(chair, -1)
+f(bee, -1)
 
 start()

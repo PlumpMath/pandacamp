@@ -46,9 +46,15 @@ def r2d2(**a):
 def tails(**a):
     return modelHandle("tails/tails.egg", **a)
 
-# Jointed Models
-def ralph(**a):#Works as of 6-23-08 ~ Kendric
+def penguin(**a):
+    return modelHandle("Penguin/Penguin.egg", **a)
+
+
+def ralph(**a):
     return modelHandle("Ralph/ralph.egg",**a )
+
+def bee (**a):
+    return modelHandle("Bee/Bee.egg", **a)
 
 
 # Objects and Shapes
@@ -70,6 +76,16 @@ def russianBuilding(**a):
 
 def volleyBall(**a):
     return modelHandle("volleyBall/volleyball.egg", **a)
+
+def stoplightSign(**a):
+    return modelHandle("stoplight_sign/stoplight_sign.egg", **a)
+
+def slipperyRoadSign(**a):
+    return modelHandle("slipperySign/slipperySign.egg", **a)
+
+
+
+# Jointed Models
 
 
 #vehicals

@@ -4,8 +4,8 @@ from Panda import *
 score = var(0)
 tries = var(5)
 
-text("Score: " + string(score), color = green)
-text("Tries: " + string(tries), color = green)
+#text("Score: " + string(score), color = green)
+#text("Tries: " + string(tries), color = green)
 
 camera.position = P3(0,0,20)
 camera.hpr = HPR(0,-pi/2,0)
