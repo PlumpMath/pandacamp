@@ -133,6 +133,7 @@ class Model(Handle):
         self.__dict__['hpr']   = newSignalRefd(self, 'hpr', HPRType, HPR(0,0,0), ctl)
         self.__dict__['color'] = newSignalRefd(self, 'color', ColorType, noColor, ctl)
         self.__dict__['size'] = newSignalRefd(self, 'size', numType, 1, ctl)
+        self.__dict__['texture'] = newSignalRefd(self, 'texture', stringType, "", ctl)
         if size is not None:
              self.size.setBehavior(size)
         if position is not None:
