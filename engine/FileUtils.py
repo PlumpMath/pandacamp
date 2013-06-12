@@ -63,6 +63,8 @@ def saveDict(file, dict, types = {}):
     for k,v in dict.iteritems():
         if k in types:
             v = types[k].encode(v)
+        else:
+            print "No type for " + k
         lines.append([k, v])
     saveCSV(file, lines)
 
