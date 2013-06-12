@@ -11,6 +11,6 @@ def f(m, x):
 f(panda, 2)
 f(penguin, 1)
 f(balloonBoy, 0)
-f(bee, -1)
+f(dragon, -1)
 
 start()

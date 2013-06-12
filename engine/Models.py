@@ -49,13 +49,17 @@ def tails(**a):
 def penguin(**a):
     return modelHandle("Penguin/Penguin.egg", **a)
 
-
 def ralph(**a):
     return modelHandle("Ralph/ralph.egg",**a )
 
 def bee (**a):
     return modelHandle("Bee/Bee.egg", **a)
 
+def chicken (**a):
+    return modelHandle("Chicken2/Chicken2.egg", **a)
+
+def dragon (**a):
+    return modelHandle("dragon3/dragon3.egg", **a)
 
 # Objects and Shapes
 
@@ -82,6 +86,9 @@ def stoplightSign(**a):
 
 def slipperyRoadSign(**a):
     return modelHandle("slipperySign/slipperySign.egg", **a)
+
+def bowlingPins(**a):
+    return modelHandle ("bowlingpins/bowlingpins.egg", **a)
 
 
 
