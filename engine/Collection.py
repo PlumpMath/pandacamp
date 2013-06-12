@@ -24,3 +24,10 @@ class Collection:
         self.members = newMembers
 
 collection = Collection
+
+def getCollection(s):
+    if isinstance(s, basestring):
+        if s not in g.collections:
+            g.collections[s] = collection()
+        return g.collections[s]
+    return s  # Should already be a collection

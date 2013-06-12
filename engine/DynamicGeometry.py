@@ -5,7 +5,6 @@ from g import*
 
 from Types import *
 from Handle import *
-from sys import exit
 from Model import findTexture
 
 class GeometryHandle(Handle):

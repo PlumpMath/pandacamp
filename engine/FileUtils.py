@@ -148,3 +148,5 @@ def findTexture(fileName):
         tFile = FileName(g.pandaPath + "/textures/default.jpg")
     return loader.loadTexture(tFile)
 
+def findSound(fileName):
+    return fileSearch(fileName, "sounds", ["wav", "mp3"])

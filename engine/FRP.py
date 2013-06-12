@@ -5,6 +5,7 @@ import g
 import g
 from Signal import *
 from Time import *
+from Collection import getCollection
 
 # Some things we still need:
 #   Clocks
@@ -61,8 +62,8 @@ class Hit(Event):
 
     def refresh(self):
         res = []
-        l1 = self.m1.allModels()
-        l2 = self.m2.allModels()
+        l1 = getCollection(self.m1).allModels()
+        l2 = getCollection(self.m2).allModels()
         if self.trace:
                 print repr(l1)
                 print repr(l2)
@@ -361,6 +362,8 @@ def timeIs(t, val = True):
     return tag(val, Clock(t,None,t,False))
 
 def alarm(start = 0, end = None, step = None):
+    if end is None:
+        return Clock(0, start, None, True)
     return Clock(start, step, end, True)
 
 def localTimeIs(t, val = True):

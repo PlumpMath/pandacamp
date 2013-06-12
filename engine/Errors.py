@@ -2,14 +2,14 @@
 
 # This handles all errors
 
-from sys import exit
+import sys
 import g
 from Types import getPType
 
 # Detected in checkSignal
 def undefinedSignal(obj, sname):
     print "Signal " + sname + " is not defined for " + obj.name
-    exit()
+    sys.exit()
 
 def multipleDef(obj, sname):
     print sname + " is already defined for " + obj.name
@@ -17,28 +17,28 @@ def multipleDef(obj, sname):
 
 def unKnownMethod(obj, sname):
     print 'Unknown method ' + sname + ' in object ' + str(obj) + ' is not defined'
-    exit()
+    sys.exit()
 
 def signalTypeError(slot, parent, reqType, badType):
     print "Type error for signal " + slot + " of " + parent
     print " Required type: " + str(reqType) + ", type given: " + str(badType)
-    exit()
+    sys.exit()
 
 def wrongNumberOfArguments(l):
     print "Wrong number of arguments to " + l
     showtccontext()
-    exit()
+    sys.exit()
 
 def argTypeError(fname, was, needed, n):
     print "Error: argument " + str(n) + " to function " + fname
     print "Needed type " + str(needed) + ", found " + str(was)
     showtccontext()
-    exit()
+    sys.exit()
 
 def typesMustMatch(fname, t1, t2):
     print "Error: in " + fname + " argument types " + str(t1) + " and " + str(t2) + " must match"
     showtccontext()
-    exit()
+    sys.exit()
 
 def showtccontext():
     c = g.tccontext
@@ -53,24 +53,24 @@ def checkKeyType(parent, object, needed, name):
 def mismatchedNumerics(msg, t1, t2):
     print "Numeric type mismatch in " + msg
     print "Types: " + str(t1) + " and " + str(t2)
-    exit()
+    sys.exit()
 
 def badArgToAbs(arg):
     print "Type " + str(arg) + " cannot be used with abs function"
-    exit()
+    sys.exit()
 
 def missingSignalRef(arg):
     print "Signal missing: " + arg
-    exit()
+    sys.exit()
 
 def slotInUse(obj, slot):
     print "Slot  " + slot + " of " + obj + " cannot be used as a local signal - use a different name"
-    exit()
+    sys.exit()
 
 def interpTypeError(ty):
     print "Can't interpolate values in type " + str(ty)
-    exit()
+    sys.exit()
 
 def badKeyName(n):
     print str(n) + " is not a valid key name"
-    exit()
+    sys.exit()

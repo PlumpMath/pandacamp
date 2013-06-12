@@ -7,7 +7,7 @@ from Numerics import *
 from Types import *
 from Switchers import *
 from copy import copy
-from sys import exit
+import sys
 from FRP import localTimeIs
 
 # Every object uses SignalRef objects to hold reactive attributes.  Each of these has
@@ -37,12 +37,12 @@ def newSignalRefd(handle, slot, ty, dfn, control = None):
 def setType(ref, ty):
        if not isinstance(ref,SignalRef):
           print "setType: expecting a signal - " + ref
-          exit()
+          sys.exit()
        if ref.d.sigtype == anyType or ref.d.sigtype == ty:
           ref.d.sigtype = ty
        else:
           print "Cant change type of " + ref + " to " + ty
-          exit()
+          sys.exit()
 
 # This class handles static data within the object - it's just used as a container.
 # This always lives in the "d" field of the object.
@@ -205,4 +205,5 @@ def removeModel(model):
         g.models = newModels
 
 def exit(x):
+    print "My exit"
     x.exit()

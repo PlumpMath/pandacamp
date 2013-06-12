@@ -9,20 +9,15 @@ import direct.directbase.DirectStart          # start panda
 from direct.showbase import DirectObject      # for event handling
 from direct.actor import Actor                # allow use of actor
 from direct.gui.DirectGui import *
-from panda3d.core import PandaNode,NodePath
-from panda3d.core import ColorBlendAttrib
-from panda3d.core import Vec4
 from Time import *
 from Signal import *
 from Numerics import *
 from Types import *
 from Switchers import *
-from copy import copy
 from Handle import *
 from FRP import tag, hold, typedVar, timeIs, localTimeIs
 from direct.showbase.DirectObject import DirectObject
 import sys,os
-loadPrcFileData("", "prefer-parasite-buffer #f")
 from direct.interval.IntervalGlobal import *
 from direct.gui.DirectGui import OnscreenText
 from random import *
@@ -152,17 +147,47 @@ rbutton = g.rbutton
 rbuttonPull = g.rbuttonPull
 lbuttonPull = g.lbuttonPull
 
-def react(event, handler):
-    world.react(event, handler)
+def applyAll(handler):
+    def react(m, e):
+        for (m1, m2) in e:
+            handler(m1, m2)
+    return  react
+        
+def react(event, handler, extra = None):
+    if extra is None:
+        world.react(event, handler)
+    else:
+        event.react(handler, extra)
 
-def react1(event, handler):
-    world.react1(event, handler)
+def react1(event, handler, extra = None):
+    if extra is None:
+        world.react1(event, handler)
+    else:
+        event.react1(handler, extra)
 
-def when(event, handler):
-    world.when(event, handler)
+def reactAll(event, handler, extra = None):
+    if extra is None:
+        world.react(event, applyAll(handler))
+    else:
+        event.react(handler, applyAll(extra))
 
-def when1(event, handler):
-    world.when1(event, handler)
+def reactAll1(event, handler, extra = None):
+    if extra is None:
+        world.react1(event, applyAll(handler))
+    else:
+        event.react1(handler, applyAll(extra))
+
+def when(event, handler, extra = None):
+    if extra is None:
+        world.when(event, handler)
+    else:
+        event.when(handler, extra)
+
+def when1(event, handler, extra = None):
+    if extra is None:
+        world.when1(event, handler)
+    else:
+        event.when1(handler, extra)
 
 def key(kname, val = True):
     kname = checkValidKey(kname)

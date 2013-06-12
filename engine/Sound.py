@@ -1,4 +1,3 @@
-
 # This can play sound in an event handler
 
 import direct.directbase.DirectStart
@@ -14,41 +13,34 @@ from FileUtils import *
 
 
 class Sound:
-    def __init__(self, file, loopCount = 1, volume = 0.5, kill = None):
+    def __init__(self, file, loopCount = 1, volume = 0.5):
 
-        self.filePath = fileSearch(file, "sounds", ["wav", "mp3"]).toOsSpecific()
-        self.type = SoundType
-        self.volume = volume
-        self.loopCount = loopCount
-        self.sound = loader.loadSfx(self.filePath)
-        self.sound.setVolume(self.volume)
+        self.filePath = findSound(file)
+        self.foundSound = self.filePath is not None
+        if self.foundSound:
+            self.type = SoundType
+            self.volume = volume
+            self.loopCount = loopCount
+            self.sound = loader.loadSfx(self.filePath)
+            self.sound.setVolume(self.volume)
+        else:
+            print "Sound " + file + " not found"
     def __str__(self):
         "Sound: " + self.filePath
     def play(self):
-        if self.loopCount != 1:
-            self.sound.setLoop(True)
-            self.sound.setLoopCount(self.loopCount)
-        self.sound.play()
-        return self.sound
+        if self.foundSound:
+            if self.loopCount != 1:
+                self.sound.setLoop(True)
+                self.sound.setLoopCount(self.loopCount)
+            self.sound.play()
+            return self.sound
     def setRate(self, n):
-        self.sound.setPlayRate(n)
+        if self.foundSound:
+            self.sound.setPlayRate(n)
 
 def sound(*p, **k):
     return Sound(*p, **k)
 
-
-#def getSoundFile(file):
-    #f = Filename.expandFrom(file)
-    #if (f.exists()):
-        #return f
-    #f = g.pandaPath + "/sounds/" + file
-    #if (Filename.expandFrom(f).exists()):
-        ## print "Loaded from library:" + f
-        #return f
-    #if (Filename.expandFrom(f + ".wav").exists()):
-        #return f + ".wav"
-    #print "Sound " + file + " not found."
-    #return Filename.expandFrom(g.pandaPath + "/sounds/duck.wav")
 
 # Add a loop parameter
 def play(s):

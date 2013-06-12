@@ -54,7 +54,9 @@ nextSignalRef = 0
 # Configuration stuff
 findClickedModels = None
 
-texture = None
+texture = None  # Used to communicate with particle effect code from particle panel
+
+collections = {}
 
 #need to check os so it can be os independent top one for windows while bottom is for linux
 osType = platform.system()  # OS That is being used. # NotReturning Correct osType should be Windows Insted of Java.

@@ -15,6 +15,7 @@ from Switchers import *
 from Handle import *
 from FileUtils import *
 from FRP import localTimeIs
+from Collection import getCollection
 
 # This fills in all of the defaults
 parameterCache = {}
@@ -47,14 +48,14 @@ pandaParameters = { "localSize" : 0.00178,
                     "localOrientation" : HPR(0, 0, 0)}
 
 def modelHandle(fileName, name = None, size = None, hpr = None, position = None, color = None,
-                 control = None, texture = None, duration = 0, collection = None):
+                 control = None, texture = None, duration = 0, kind = None):
    res = Model(fileName, name, size, hpr, position, color,
-                control, texture, duration, collection)
+                control, texture, duration, kind)
    return res
 
 class Model(Handle):
     def __init__(self, fileName, name, size, hpr, position, color,
-                 control, texture, duration, collection):
+                 control, texture, duration, kind):
         if name is None:
             name = fileName  #  Should parse off the directories
         Handle.__init__(self, name = name, duration = duration)
@@ -155,8 +156,8 @@ class Model(Handle):
             tex = findTexture(texture)
             self.d.currentTexture = texture
             self.d.model.setTexture(tex, 1)
-        if collection is not None:
-            collection.add(self)
+        if kind is not None:
+            getCollection(kind).add(self)
 
     def showModel(self):
         if not self.d.onScreen:
