@@ -23,7 +23,7 @@ import os, sys
 
 
 
-#characters/Creatures
+# Characters/Creatures
 
 def panda(**a):
     return modelHandle("panda-model.egg.pz", **a)
@@ -46,8 +46,12 @@ def r2d2(**a):
 def tails(**a):
     return modelHandle("tails/tails.egg", **a)
 
+# Jointed Models
+def ralph(**a):#Works as of 6-23-08 ~ Kendric
+    return modelHandle("Ralph/ralph.egg",**a )
 
-#objects and shapes
+
+# Objects and Shapes
 
 def sphere(**a):
     return modelHandle("sphere/sphere.egg", **a)
@@ -103,17 +107,7 @@ def farmSky(**a):
     return modelHandle("farmSky/farmsky.egg", **a)
 '''
 #jointed models
-def ralph(**a):#Works as of 6-23-08 ~ Kendric
-    return modelHandle("Ralph/ralph.egg", name = 'Ralph',
-                       localSize = .18,
-                       cRadius = 0.2,
-                       cFloor = 0.0, cTop = 1.0, cType = 'cyl',
-                       joints = [('neck', 'Neck'), ('leftWrist', 'LeftWrist'),
-                                 ('rightWrist', 'RightWrist'),
-                                 ('jaw', 'Jaw'), ('leftElbow', 'LeftElbow'),
-                                 ('rightShoulder', 'RightShoulder'), ('leftShoulder', 'LeftShoulder'), ('leftKnee', 'LeftKnee'),
-                                 ('rightKnee', 'RightKnee')], animations = {"walk" : g.pandaPath + "/models/Ralph/ralph-walk.egg"},
-                                 defaultAnimation = "walk", frame = 4,  **a )
+
 
 def sonic(**a):#Works as of 6-23-08 ~ Kendric
     return modelHandle("sonic/sonic.egg", name = "Sonic",

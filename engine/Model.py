@@ -259,7 +259,7 @@ class Model(Handle):
         return [self]
 
 def findTexture(fileName):
-    tFile = fileSearch(fileName, "models", ["jpg", "gif", "png", "jpeg"])
+    tFile = fileSearch(fileName, "textures", ["jpg", "gif", "png", "jpeg"])
     if tFile is None:
         tFile = FileName(g.pandaPath + "/pictures/default.jpg")
     return loader.loadTexture(tFile)
