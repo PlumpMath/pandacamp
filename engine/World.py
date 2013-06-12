@@ -29,166 +29,12 @@ from random import *
 from g import* # Global names
 
 
-def makeFilterBuffer(srcbuffer, name, sort, prog):
-    blurBuffer=base.win.makeTextureBuffer(name, 512, 512)
-    blurBuffer.setSort(sort)
-    blurBuffer.setClearColor(Vec4(1,0,0,1))
-    blurCamera=base.makeCamera2d(blurBuffer)
-    blurScene=NodePath("new Scene") 
-    blurCamera.node().setScene(blurScene)
-    shader = loader.loadShader(prog)
-    card = srcbuffer.getTextureCard()
-    card.reparentTo(blurScene)
-    card.setShader(shader)
-    return blurBuffer
-
-
-class Glow():
-    def __init__(self, name = 'glow', amount = 0, red = 100, green = 100, blue = 100):
-        print "Glow enabled!"
-        
-        ## Glow by Adam Bell (ventosproject@gmail.com)
-        ## with some original code from Kwasi Mensah (kmensah@andrew.cmu.edu)
-        ## for PandaCamp (code.google.com/p/pandacamp/)
-        
-        #The shader is important (but yet a variable). 
-        
-        ## The next part I'll replace with a single file as soon 
-        ## as I can work with variables in the *.SHA files.
-        
-        redd = red / 100
-        greend = green / 100
-        blued = blue / 100
-        
-        if amount == 0:
-            print "glowShader set to it's default value of 1."
-            amount = 1
-        
-        ## Custom number for a positive non-integer or above 4.
-        if amount > 0:
-            ### NOTE: the line below is an RGB
-            render.setShaderInput('amnt',amount * redd,amount * greend,amount * blued,amount)
-            print "glowShader set as " + str(amount) + "!"
-            
-        if amount < 0:
-            raise TypeError('Only positive numbers work for the glowShader!')
-
-
-        # except that only the glowing materials should show up nonblack.
-        base.disableMouse()
-        glowBuffer=base.win.makeTextureBuffer("Glow scene", 512, 512)
-        glowBuffer.setSort(-3)
-        glowBuffer.setClearColor(Vec4(0,0,0,1))
-        
-        glowCamera=base.makeCamera(glowBuffer, lens=base.cam.node().getLens())
-        
-        
-        # Tell the glow camera to use the glow shader
-        tempnode = NodePath(PandaNode("temp node"))
-        tempnode.setShader(loader.loadShader('/c/panda/pandacamp/src/shaders/glowShader.sha'))
-        ## Was 'Shader.load'
-        glowCamera.node().setInitialState(tempnode.getState())
-        
-        # X and Y shaders to make the earlier "glowShader.sha" work (or effective).
-        blurXBuffer=makeFilterBuffer(glowBuffer,  "Blur X", -2, "/c/panda/pandacamp/src/shaders/XBlurShader.sha")
-        blurYBuffer=makeFilterBuffer(blurXBuffer, "Blur Y", -1, "/c/panda/pandacamp/src/shaders/YBlurShader.sha")
-        self.finalcard = blurYBuffer.getTextureCard()
-        self.finalcard.reparentTo(render2d)
-        self.finalcard.setAttrib(ColorBlendAttrib.make(ColorBlendAttrib.MAdd))
-        
-        # Panda contains a built-in viewer that lets you view the results of
-        # your render-to-texture operations.  This code configures the viewer.
-        base.bufferViewer.setPosition("llcorner")
-        base.bufferViewer.setLayout("hline")
-        base.bufferViewer.setCardSize(0.652,0)
 
 # Function to put title on the screen.
 def addTitle(text):
     return OnscreenText(text=text, style=1, fg=(1,1,1,1),
                         pos=(1.3,-0.95), align=TextNode.ARight, scale = .07)
-                        
-class Shadow():
-    
-    def shadow(self):
-            # Preliminary capabilities check.
-            if (base.win.getGsg().getSupportsBasicShaders()==0):
-                self.t=addTitle("It appears that shaders are not supported. They willn't work, sorry.")
-                return
-            if (base.win.getGsg().getSupportsDepthTexture()==0):
-                self.t=addTitle("It appears that depth textures are not supported. They willn't work, sorry.")
-                return
-            # creating the offscreen buffer.
-        
-            winprops = WindowProperties.size(512,512)
-            props = FrameBufferProperties()
-            props.setRgbColor(1)
-            props.setAlphaBits(1)
-            props.setDepthBits(1)
-            LBuffer = base.graphicsEngine.makeOutput(
-                     base.pipe, "offscreen buffer", -2,
-                     props, winprops,
-                     GraphicsPipe.BFRefuseWindow,
-                     base.win.getGsg(), base.win)
-        
-            if (LBuffer == None):
-               self.t=addTitle("The video driver cannot create an offscreen buffer.")
-               return
-            Ldepthmap = Texture()
-            LBuffer.addRenderTexture(Ldepthmap, GraphicsOutput.RTMBindOrCopy, GraphicsOutput.RTPDepthStencil)
-            if (base.win.getGsg().getSupportsShadowFilter()):
-                Ldepthmap.setMinfilter(Texture.FTShadow)
-                Ldepthmap.setMagfilter(Texture.FTShadow) 
-            # Adding a color texture is totally unnecessary, but it helps with debugging.
-            Lcolormap = Texture()
-            LBuffer.addRenderTexture(Lcolormap, GraphicsOutput.RTMBindOrCopy, GraphicsOutput.RTPColor)
-        
-            base.disableMouse()
-            # Load the scene.
-        
-            cm=CardMaker('')
-            cm.setFrame(-2,2,-2,2)
-            floor = render.attachNewNode(PandaNode("floor"))
-            for y in range(12):
-                for x in range(12):
-                    nn = floor.attachNewNode(cm.generate())
-                    nn.setP(-90)
-                    nn.setPos((x-6)*4, (y-6)*4, 0)
-            floor.flattenStrong()
-            self.LCam=base.makeCamera(LBuffer)
-            # default values
-            self.ambient=0.2
-            self.cameraSelection = 0
-            self.lightSelection = 0
-            # setting up shader
-            render.setShaderInput('light',self.LCam)
-            render.setShaderInput('Ldepthmap',Ldepthmap)
-            render.setShaderInput('ambient',self.ambient,0,0,1.0)
-            render.setShaderInput('texDisable',0,0,0,0)
-            render.setShaderInput('scale',1,1,1,1)
-            render.setShaderInput('push',1,1,1,0)
-            # Put a shader on the Light camera.
-            lci = NodePath(PandaNode("Light Camera Initializer"))
-            lci.setShader(Shader.load('/c/panda/pandacamp/src/shaders/caster.sha'))
-            self.LCam.node().setInitialState(lci.getState())
-            # Put a shader on the Main camera.
-            # Some video cards have special hardware for shadow maps.
-            # If the card has that, use it.  If not, use a different
-            # shader that does not require hardware support.
-            mci = NodePath(PandaNode("Initiating Shadows"))
-            if (base.win.getGsg().getSupportsShadowFilter()):
-                mci.setShader(Shader.load('/c/panda/pandacamp/src/shaders/shadow.sha'))
-            else:
-                mci.setShader(Shader.load('/c/panda/pandacamp/src/shaders/shadow-nosupport.sha'))
-            base.cam.node().setInitialState(mci.getState())
-        
-    def __init__(self, ifon = 1):
-        if ifon == 1:
-            Shadow.shadow(self)
-            print "Shadows are on."
-        if ifon == 0:
-            print "Advanced Shadow is off."
-            return
-       
+
 
 class Camera(Handle):
   def __init__(self):
@@ -235,6 +81,18 @@ class World(Handle):
        print "World object received a kill signal"
        exit()
 
+def lbp(e = True):
+    return getEventSignal("mouse1", e)
+
+def rbp(e = True):
+    return getEventSignal("mouse3", e)
+
+def lbr(e = True):
+    return getEventSignal("mouse1-up", e)
+
+def rbr(e = True):
+    return getEventSignal("mouse3-up", e)
+
 def initializeGlobals():
      base.disableMouse()  # this takes the mouse away from Panda3D
      g.panda3dCamera = camera
@@ -249,13 +107,9 @@ def initializeGlobals():
      g.nextNW2dY = .95
      g.tccontext = None
      # Set up the events / behaviors that deal with the mouse
-     g.lbp = getEventSignal("mouse1", True)
-     g.rbp = getEventSignal("mouse3", True)
-     g.lbr = getEventSignal("mouse1-up", True)
-     g.rbr = getEventSignal("mouse3-up", True)
      g.mouse = typedVar(SP2(0,0), P2Type)
-     g.lbutton = hold(False, tag(True, g.lbp) + tag(False, g.lbr))
-     g.rbutton = hold(False, tag(True, g.rbp) + tag(False, g.rbr))
+     g.lbutton = hold(False, lbp(True) + lbr(False))
+     g.rbutton = hold(False, rbp(True) + rbr(False))
      g.initMousePos = True
      g.mousePos = SP2(0,0)
      g.lbuttonPull = typedVar(SP2(0,0), P2Type)
@@ -268,7 +122,7 @@ def initializeGlobals():
   # Cache keypress events so there's no duplication of key events - not
   # sure this is useful but it can't hurt.  Probably not a good idea to
   # have multiple accepts for the same event.
-  
+
 def getEventSignal(ename, val):
         if g.eventSignals.has_key(ename):
             return tag(val, g.eventSignals[ename])
@@ -292,51 +146,23 @@ initializeGlobals()
 camera = Camera()
 # Bring the GUI behaviors / events to the user namespace
 mouse = g.mouse
-lbp = g.lbp
-lbr = g.lbr
-rbp = g.rbp
-rbr = g.rbr
+
 lbutton = g.lbutton
 rbutton = g.rbutton
 rbuttonPull = g.rbuttonPull
 lbuttonPull = g.lbuttonPull
 
-def react(event, handler, m=None):
-    if m is None:
-        world.react(event, handler)
-    else:
-        model = event
-        event = handler
-        handler = m
-        model.react(event, handler)
+def react(event, handler):
+    world.react(event, handler)
 
-def react1(event, handler, m=None):
-    if m is None:
-        world.react1(event, handler)
-    else:
-        model = event
-        event = handler
-        handler = m
-        model.react1(event, handler)
+def react1(event, handler):
+    world.react1(event, handler)
 
-def when(event, handler, m=None):
-    if m is None:
-        world.when(event, handler)
-    else:
-        model = event
-        event = handler
-        handler = m
-        model.when(event, handler)
+def when(event, handler):
+    world.when(event, handler)
 
-def when1(event, handler, m=None):
-    if m is None:
-        world.when1(event, handler)
-    else:
-        model = event
-        event = handler
-        handler = m
-        model.when1(event, handler)
-
+def when1(event, handler):
+    world.when1(event, handler)
 
 def key(kname, val = True):
     kname = checkValidKey(kname)
@@ -352,22 +178,17 @@ def leftClick(model, val = True):
 def rightClick(model, val = True):
     return getEventSignal(model.d.model.getTag('rpandaid') + "-rightclick", val)
 
-allKeyNames = ["escape", "f1","f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12", 
-               "backspace", "insert", "home", "page_up", "num_lock",
-               "tab",  "delete", "end", "page_down",
-               "enter", "arrow_left", "arrow_up", "arrow_down", "arrow_right", 
-               "space"]
+allKeyNames = ["escape", "f1","f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12",
+               "backspace", "insert", "home", 
+               "tab",  "delete", "end", "enter", "space"]
+
+keyRenamings = {"upArrow": "arrow_up", "downArrow": "arrow_down",
+                "leftArrow": "arrow_left", "rightArrow": "arrow_right",
+                "pageUp": "page_up", "pageDown": "page_down"}
+                
 def checkValidKey(s):
-    if s == " ":
-        return "space"
-    if s == "left-arrow":
-        return "arrow_left"
-    if s == "right-arrow":
-        return "arrow_right"
-    if s == "up-arrow":
-        return "arrow_up"
-    if s == "down-arrow":
-        return "arrow_down"
+    if s in keyRenamings:
+        return keyRenamings[s]
     if type(s) is type("s"):
         if len(s) == 1 or s in allKeyNames:
             return s

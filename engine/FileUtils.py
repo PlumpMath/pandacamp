@@ -10,21 +10,22 @@ def fileSearch(file, libDir = None, exts = []):
 
     f1 = Filename.expandFrom(file)
     if f1.exists():
-# print "Local file"
+ #       print "Local file"
         return f1
 
     for e in exts:
         f1.setExtension(e)
         if f1.exists():
+ #           print "Extension: " + e
             return f1
     if libDir is not None:
         f2 = Filename.expandFrom(g.pandaPath + "/" + libDir + "/" + file)
-# print "In library"
-# print f2
-        if f2 is not None:
+ #       print "Searching library"
+        if f2.exists():
             return f2
         for e in exts:
             f2.setExtension(e)
+            print "Extension: " + e
             if f2.exists():
                 return f2
     return None
@@ -63,6 +64,8 @@ def saveDict(file, dict, types = {}):
     for k,v in dict.iteritems():
         if k in types:
             v = types[k].encode(v)
+        else:
+            print "No type for " + k
         lines.append([k, v])
     saveCSV(file, lines)
 
@@ -137,4 +140,11 @@ def csvUnquote(s):
     if item != "" or atStart:
         r.append(item)
     return r
+
+def findTexture(fileName):
+    tFile = fileSearch(fileName, "textures", ["jpg", "gif", "png", "jpeg"])
+    print "Texture: " + str(tFile)
+    if tFile is None:
+        tFile = FileName(g.pandaPath + "/textures/default.jpg")
+    return loader.loadTexture(tFile)
 

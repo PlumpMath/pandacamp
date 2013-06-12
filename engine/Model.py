@@ -129,10 +129,12 @@ class Model(Handle):
         self.d.localPosition = localPosition
         self.d.localOrientation = localOrientation
         self.d.onScreen = False
+        self.d.currentTexture = ""
         self.__dict__['position'] = newSignalRefd(self, 'position', P3Type, P3(0,0,0), ctl)
         self.__dict__['hpr']   = newSignalRefd(self, 'hpr', HPRType, HPR(0,0,0), ctl)
         self.__dict__['color'] = newSignalRefd(self, 'color', ColorType, noColor, ctl)
         self.__dict__['size'] = newSignalRefd(self, 'size', numType, 1, ctl)
+        self.__dict__['texture'] = newSignalRefd(self, 'texture', stringType, "", ctl)
         if size is not None:
              self.size.setBehavior(size)
         if position is not None:
@@ -151,6 +153,7 @@ class Model(Handle):
         self.d.animPlaying = False # This initializes it so there is no animation playing.
         if texture is not None:
             tex = findTexture(texture)
+            self.d.currentTexture = texture
             self.d.model.setTexture(tex, 1)
         if collection is not None:
             collection.add(self)
@@ -178,6 +181,11 @@ class Model(Handle):
        c = self.color.now()
        if c.a != 0:   # This signals that there is no color to paint on the model
            self.d.model.setColor(c.toVBase4())
+       texture = self.texture.now()
+       if texture != self.d.currentTexture:
+            texf = findTexture(texture)
+            self.d.currentTexture = texture
+            self.d.model.setTexture(texf, 1)
        if not self.d.animPlaying:#this just lets the animation continue instead of overriding it.
            if self.d.hasJoints:
                for j,pj in self.d.joints:
@@ -199,9 +207,9 @@ class Model(Handle):
         else:
             self.d.model.loop(anim)
             self.d.animPlaying = True
-    def setTexture(self, texture):
-        tex = loader.loadTexture(findTexture(texture))
-        self.d.model.setTexture(tex, 1)
+    #def setTexture(self, texture):
+    #    tex = loader.loadTexture(findTexture(texture))
+    #    self.d.model.setTexture(tex, 1)
     def reparentTo(self, handle):
         self.d.model.reparentTo(handle.d.model)
         # This doesn't allow the HPR to modify the cylinder so it's pretty crude.
@@ -257,8 +265,4 @@ class Model(Handle):
     def allModels(self):  # A collection will return more than one model
         return [self]
 
-def findTexture(fileName):
-    tFile = fileSearch(fileName, "textures", ["jpg", "gif", "png", "jpeg"])
-    if tFile is None:
-        tFile = FileName(g.pandaPath + "/pictures/default.jpg")
-    return loader.loadTexture(tFile)
+
