@@ -35,10 +35,6 @@ nextModelId = 0
 # Global GUI signals
 
 mouse =       None  # Current mouse position
-lbp =         None  # Left button press
-lbr =         None  # Left button release
-rbp =         None  # Right button press
-rbr =         None  # Right button release
 lbutton =     None  # Left button state
 rbutton =     None  # Right button state
 rbuttonPull = None  # "Pulled" 2-D Point for the right button
