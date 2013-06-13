@@ -205,5 +205,4 @@ def removeModel(model):
         g.models = newModels
 
 def exit(x):
-    print "My exit"
     x.exit()
