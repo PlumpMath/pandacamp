@@ -67,7 +67,7 @@ def sphere(**a):
     return modelHandle("sphere/sphere.egg", **a)
 
 def soccerBall(**a):#This one needs some atttention
-    return sphere(texture = "soccerball/soccer.png", **a)
+    return modelHandle("soccerball/soccerball.egg", **a)
 
 def chair(**a):
     return modelHandle("deskChair/deskchair.egg",**a)

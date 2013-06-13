@@ -69,7 +69,3 @@ if osType == 'Linux':
 if osType == 'Windows':
   #  print "we're on Windows"                   # Since we are on a Windows system we will use the windows file path.
     pandaPath = "/c/panda/lib"
-
-
-
-
