@@ -194,7 +194,7 @@ class PEffect(Handle):
                         ):
         """
         if texture is not None:
-            g.texture = loader.loadTexture(findTexture(texture))
+            g.texture = findTexture(texture)
         if name is None:
             name = 'PEffect-%d' % PEffect.pid
             PEffect.pid += 1
