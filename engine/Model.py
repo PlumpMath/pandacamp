@@ -47,7 +47,7 @@ pandaParameters = { "localSize" : 0.00178,
                     "localPosition" : P3( 0, 0.21, 0),
                     "localOrientation" : HPR(0, 0, 0)}
 
-def modelHandle(fileName, name = None, size = None, hpr = None, position = None, color = None,
+def model(fileName, name = None, size = None, hpr = None, position = None, color = None,
                  control = None, texture = None, duration = 0, kind = None):
    res = Model(fileName, name, size, hpr, position, color,
                 control, texture, duration, kind)
@@ -263,5 +263,3 @@ class Model(Handle):
         return False
     def allModels(self):  # A collection will return more than one model
         return [self]
-
-
