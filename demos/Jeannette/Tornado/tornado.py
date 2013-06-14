@@ -50,11 +50,11 @@ def o(m,v):
     sphere(position = j(localTime), size = .1, color = color(randomRange(0,1),randomRange(0,1),randomRange(0,1)))
 
 c = alarm(step = .1)
-#react(c,volcano)
-#react(c, l)
-#react(c,m)
+react(c,volcano)
+react(c, l)
+react(c,m)
 react(c, n)
-#react(c,o)
+react(c,o)
 
 start()
 
