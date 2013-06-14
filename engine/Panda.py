@@ -5,7 +5,6 @@
 #  starts Panda
 
 import direct.directbase.DirectStart          # start panda
-import os, sys
 from direct.showbase import DirectObject      # for event handling
 from direct.actor import Actor                # allow use of actor
 from direct.gui.DirectGui import *            # 2D GUI elements
@@ -38,19 +37,24 @@ from Roll import *
 from Bezier import *
 from Physics import *
 from g import *
-#from Tunnel import *
-##! Commented out, inport directly! This is a pre-alpha version of it!
+
+# This allows user initialization to override system initialization
+g.models.append(world)  # This doesn't happen during initialization
+g.models.append(camera)
+icontext = 0
+
+for m in g.models:
+    m.checkSignals(icontext)
+    m.d.switches = m.d.newswitches # Add in switchers generated at initialization
+    
+stepEngine(0)
 
 
 # Call this at the end to fire up Panda
-
 def start():
     print "Starting..."
     # Initialize the system.  This is called from "begin" and needs to traverse
     # every active signal in the system.
-    icontext = 0
-    g.models.append(world)  # This doesn't happen during initialization
-    g.models.append(camera)
     for m in g.models:
         m.checkSignals(icontext)
         m.d.switches = m.d.newswitches # Add in switchers generated at initialization

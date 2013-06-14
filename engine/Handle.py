@@ -111,6 +111,7 @@ class Handle:
         elif undefinedRef(oldval):
             oldval.setBehavior(maybeLift(y))
         elif containsRef(self.d.undefined, oldval):
+            print "Checking " + x
             multipleDef(self, x)
         else:
 #            print "Overriding old " + oldval.sname()

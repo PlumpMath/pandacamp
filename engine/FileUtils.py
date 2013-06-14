@@ -25,7 +25,6 @@ def fileSearch(file, libDir = None, exts = []):
             return f2
         for e in exts:
             f2.setExtension(e)
-            print "Extension: " + e
             if f2.exists():
                 return f2
     return None
@@ -143,7 +142,6 @@ def csvUnquote(s):
 
 def findTexture(fileName):
     tFile = fileSearch(fileName, "textures", ["jpg", "gif", "png", "jpeg"])
-    print "Texture: " + str(tFile)
     if tFile is None:
         tFile = FileName(g.pandaPath + "/textures/default.jpg")
     return loader.loadTexture(tFile)

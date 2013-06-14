@@ -38,9 +38,14 @@ def pollGUI():
 # We use a Panda task that reschedules itself as the main loop
 
 def stepTask(task):
-    g.currentTime = task.time  # The task contains the elapsed time
-    # Look for models that were introduced during the previous step
+    stepEngine(task.time) # The task contains the elapsed time
+    return Task.cont
+
 #    print g.newModels
+
+def stepEngine(t):
+    g.currentTime = t
+    # Look for models that were introduced during the previous step
     for newModel in g.newModels:
         newModel.checkSignals(g.currentTime)
         newModel.d.switches = newModel.d.newswitches
@@ -68,7 +73,7 @@ def stepTask(task):
     # Force all unevaluated thunks (avoids time leaks)
     for t in g.thunks:
         t.force()
-    return Task.cont
+
 
 # Start initialize the world object
 

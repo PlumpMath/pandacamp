@@ -61,7 +61,7 @@ class Model(Handle):
         Handle.__init__(self, name = name, duration = duration)
         mFile = fileSearch(fileName, "models")
         if mFile is None:
-            print "Can't find model"
+            print "Can't find model" + str(fileName)
             mFile = Filename("panda-model.egg.pz")
             mParams = pandaParameters
         elif fileName in parameterCache:
@@ -69,21 +69,19 @@ class Model(Handle):
         else:
             mParamFile = Filename(mFile)
             mParamFile.setExtension("model")
-            print str(mParamFile)
             if mParamFile.exists():
                 mParams = loadDict(mParamFile, modelParameters, defaultModelParameters)
-                print "Found egg and model for " + fileName
             else:
-                print "No model file"
+                print "No .model for " + str(fileName)
                 mParams = defaultModelParameters
             parameterCache[fileName] = mParams
         localPosition = mParams["localPosition"]
         localSize = mParams["localSize"]
         localOrientation = mParams["localOrientation"]
-        joints = mParams["joints"] # Needs conversion to array of pairs
-        animations = mParams["animations"]
-        defaultAnimation = mParams["defaultAnimation"]
-        frame = mParams["frame"]
+        joints = mParams["joints"] # Needs conversion to array of pairs  # Should remove this from the .model
+        animations = mParams["animations"]  # Should remove this from the .model
+        defaultAnimation = mParams["defaultAnimation"]  # Should remove this from the .model
+        frame = mParams["frame"]   # Should remove this from the .model
         cRadius = mParams["cRadius"]
         cTop = mParams["cTop"]
         cFloor = mParams["cFloor"]

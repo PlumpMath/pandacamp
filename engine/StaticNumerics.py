@@ -23,6 +23,10 @@ def sFraction(x):
 def staticLerp(t, x, y):
     return (1-t)*x + t*y
 
+# This class is the 0 element in an arbitrary numeric
+# class.  It is used as the initial result of an integrator.
+
+
 # Note that the destination is never changed.
 
 def staticLerpA(t, x, y):
@@ -199,9 +203,9 @@ def toP2(x):
 
 def gendot(x,y):
     t = getPType(x)
-    if x == numType:
+    if t == numType:
         return x*y
-    if x == P2Type:
+    if t == P2Type:
         return dotP2(x,y)
     return dotP3(x,y)
 

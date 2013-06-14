@@ -56,6 +56,8 @@ findClickedModels = None
 
 texture = None  # Used to communicate with particle effect code from particle panel
 
+world = None
+
 collections = {}
 
 #need to check os so it can be os independent top one for windows while bottom is for linux

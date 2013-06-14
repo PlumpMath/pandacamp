@@ -239,8 +239,12 @@ def atTime(n, r):
 def atLocalTime(n, r):
     react(localTimeIs(n), lambda m, v: r())
 
-world.gravity = P3(0, 0, -5)
+world.gravity = P3(0, 0, -1)
+
 
 # This is the air resistance used by launch
 
 world.airRes = 0
+
+g.world = world
+
