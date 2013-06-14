@@ -130,6 +130,19 @@ zeroType = ptype("Zero")
 zero.type = zeroType
 numType.zero = 0
 
+# Check if the type can be interped?
+def interpableType(t):
+    return t is P2Type or t is P3Type or t is HPRType or t is ColorType or \
+           t is numType or t is controlType
+
+def interpType(t):
+    r = ptype("Interp", innerTypes = [t])
+    return r
+
+def checkInterpableType(t):
+    if not interpType(t):
+        print "Can't interpolate type " + str(t)
+        exit()
 
 
 def getPType(x):
