@@ -1,0 +1,9 @@
+fileName,terrain.egg
+name,terrain
+localSize,0.0217174404282
+localPosition,P3","0.26","0.09","-0.05 
+localOrientation,HPR","0.00","0.00","0.00
+cRadius,1.0, 
+cFloor,0.0699999332428
+cTop,1.0
+cType,cyl
