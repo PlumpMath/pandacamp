@@ -29,7 +29,7 @@ class GeometryHandle(Handle):
         if color is not None:
              self.color.setBehavior(color)
         if texture is not None:
-          tex = loader.loadTexture(findTexture(texture))
+          tex = findTexture(texture)
           self.d.model.setTexture(tex)
 
     def refresh(self):
@@ -79,7 +79,7 @@ def mesh(spacePoints, texturePoints, triangles, c):
                 res.append((p, c[i]))
                 i = i + 1
         return res
-    
+
     format = GeomVertexFormat.getV3c4t2()
 
 #####I believe this provides a link of some sort to the Geom.UHStatic collection of vertices.
@@ -110,7 +110,7 @@ def mesh(spacePoints, texturePoints, triangles, c):
 
     #Converting the vertices we just retrieved from the collection inside Geom.UHStatic into a node
 #####
-    
+
         geom.addPrimitive(prim)
 
     node = GeomNode('gnode')
@@ -172,7 +172,7 @@ def rectangle(p1, p2, p3, color = None, position=None, hpr=None, size=None, text
     if (side2 is not None):
         nodePath.setTwoSided(False)
         result = GeometryHandle(nodePath, position, hpr, size, color, texture)
-        if side2 is not False:  
+        if side2 is not False:
             otherSide = rectangle(p2, p1, p4, texture = side2, side2 = False, texP1 = texP1, texP2 = texP2, texP3 = texP3, texP4 = texP4)
             otherSide.reparentTo(result)
             result.d.twoSided = True
@@ -306,7 +306,7 @@ def surface(f, xmin = -10, xmax = 10, ymin = -10, ymax = 10, slices = 40, dx = N
 
     def parX(x, y):
         return (f(x + delta, y)-f(x, y)) / delta
- 
+
     def parY(x, y):
         return (f(x, y + delta)-f(x, y)) / delta
     if dx is None:
@@ -351,4 +351,3 @@ def surface(f, xmin = -10, xmax = 10, ymin = -10, ymax = 10, slices = 40, dx = N
     result.ymin = static(ymin)
     result.ymax = static(ymax)
     return result
-            
