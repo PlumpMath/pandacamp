@@ -21,7 +21,11 @@ class Sound:
             self.type = SoundType
             self.volume = volume
             self.loopCount = loopCount
-            self.sound = loader.loadSfx(self.filePath)
+            # there's something strange here wuth the filename representation -
+            # only expandFrom seems to give file names usable by loadSfx
+            fn = self.filePath.toOsSpecific()
+            fn1 = str(Filename.expandFrom(fn))
+            self.sound = loader.loadSfx(fn1)
             self.sound.setVolume(self.volume)
         else:
             print "Sound " + file + " not found"
@@ -43,5 +47,5 @@ def sound(*p, **k):
 
 
 # Add a loop parameter
-def play(s):
-    sound(s).play()
+def play(s, loopCount = 1, volume = 0.5):
+    sound(s, loopCount = loopCount, volume = volume).play()

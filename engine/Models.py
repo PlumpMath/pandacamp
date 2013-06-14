@@ -16,12 +16,6 @@ import g
 # modelHandle is defined in Handle.py
 
 from Model import *
-from pandac.PandaModules import Filename
-import os, sys
-
-
-
-
 
 # Characters/Creatures
 
@@ -165,32 +159,6 @@ def testModel(**a):
     localSize = 0.141613497853,
     joints = [('Main','Main'),('Limb','Limb')],
     **a)
-
-
-
-
-#def monster(**a):
-#    return modelHandle(g.pandaPath + "/models/monster/monster1", name = "monster1",
-#                       localSize = 0.3921, localPosition = P3(0, 0, 0),
-#                       localOrientation = HPR(0, 0, 0),
-#                       joints = [#('rootDummy', 'RootDummy'), ('root', 'Root'),
-#                                 ('rightShoulder', 'R_Shoulder'), ('rightElbow', 'R_Elbow'),
-#                                 ('rightWrist', 'R_Wrist'), ('rightClaw', 'R_Claw'),
-#                                 ('leftShoulder', 'L_Shoulder'), ('leftElbow', 'L_Elbow'),
-#                                 ('leftWrist', 'L_Wrist'), ('leftClaw', 'L_Claw'),
-##                                 ('effector1', 'effector1'), ('effector2', 'effector2'), ('effector3', 'effector3'),
-##                                 ('effector4', 'effector4'),('effector5', 'effector5'), ('effector6', 'effector6'),
-#                                 ('lidRoot', 'LidRoot'), ('lid', 'Lid'),
-#                                 ('tentacle1Root', 'Tentacle1_Root'), ('tentacle1Mid', 'Tentacle1_Mid'), ('tentacle1Tip', 'Tentacle1_Tip'),
-#                                 ('tentacle2Root', 'Tentacle2_Root'), ('tentacle2Mid', 'Tentacle2_Mid'), ('tentacle2Tip', 'Tentacle2_Tip'),
-#                                 ('tentacle3Root', 'Tentacle3_Root'), ('tentacle3Mid', 'Tentacle3_Mid'), ('tentacle3Tip', 'Tentacle3_Tip'),
-#                                 ('tentacle4Root', 'Tentacle4_Root'), ('tentacle4Mid', 'Tentacle4_Mid'), ('tentacle4Tip', 'Tentacle4_Tip'),
-##                                 ('nurbsCircle1', 'nurbsCircle1'), ('nurbsCircle2', 'nurbsCircle2'), ('nurbsCircle3', 'nurbsCircle3'),
-##                                 ('nurbsCircle4', 'nurbsCircle4'), ('nurbsCircle5', 'nurbsCircle5'), ('nurbsCircle6', 'nurbsCircle6')
-#                                 ],
-#                                 animations = {"explode" : g.pandaPath + "/models/monster/monster1-explode.egg"}, frame = 3, **a)
-
-
 
 
 

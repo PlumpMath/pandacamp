@@ -1,8 +1,11 @@
 
+from Zero import zero
+
 # This handles the typing of signal functions
 
 # Composite types such as P2, P3, and HPR are serialized as numbers separated by commas.
 # This parses those numbers.
+
 
 def parseNumbers(str):
     nums = str.split(",")
@@ -32,6 +35,7 @@ class ptype:
         self.innerTypes = innerTypes
         self.encoder = encoder
         self.decoder = decoder
+        self.zero = zero
     def __str__(self):
         r = self.tname
         if self.innerTypes != []:
@@ -122,7 +126,9 @@ scalableType = ptype("scalable", subtypes = [numType, P2Type, P3Type, HPRType])
 interpableType = ptype("interp", subtypes = [numType, P2Type, P3Type, ColorType, controlType, HPRType])
 addableType = ptype("addable", subtypes = [numType, P2Type, P3Type, stringType, controlType, HPRType])
 StringListType = ptype("String Pair List", encoder = encodeStringList, decoder = decodeStringList)
-
+zeroType = ptype("Zero")
+zero.type = zeroType
+numType.zero = 0
 
 
 
@@ -145,5 +151,5 @@ def getPType(x):
 
     return ptype("Unknown: " + str(t))
 
-numType.zero = 0
+
 

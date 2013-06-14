@@ -6,6 +6,7 @@ import g
 from Signal import *
 from Time import *
 from Collection import getCollection
+from StaticNumerics import zero
 
 # Some things we still need:
 #   Clocks
@@ -142,9 +143,7 @@ class Integrator(CachedSignal):
     def typecheck(self, etype):
 #        print "Type checking integrator"
         st = self.s.typecheck(addableType)
-#        print "Integrator argument type: " + st.tname + " Zero: " + str(st.zero)
-        if not(addableType.implies(st)):
-            argTypeError("integral",st, addableType, 1)
+#        print "Integrator argument type: " + st.tname
         self.zero = st.zero
         return st
     # This resets the integrator when reinitialized.
@@ -186,8 +185,6 @@ class DerivSignal(CachedSignal):
         return deltaV * (1/deltaT)
     def typecheck(self, etype):
         sigType = self.s.typecheck(addableType)
-        if not addableType.implies(sigType):
-            argTypeError("deriv", sigType, addableType, 2)
         if self.init is None:
             self.init = sigType.zero
         return sigType
