@@ -1,0 +1,9 @@
+fileName,spaceship/spaceship.egg
+name,spaceship
+localSize,0.029258979374
+localPosition,P3","0.00","0.00","0.00
+localOrientation,HPR","-0.39","0.00","0.00
+cRadius,1.0
+cFloor,0.0
+cTop,1.0
+cType,cyl

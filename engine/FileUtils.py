@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import g
 from panda3d.core import Filename
 from Types import *

@@ -1,0 +1,1 @@
+localSize = 0.0485853876031, localPosition = P3(   0.02,   -0.09,    0.42), localOrientation = HPR(  -1.21,    0.00,    0.00), cRadius = 1.0, cFloor = 0.0, cTop = 1.0, cType = 'cyl'
