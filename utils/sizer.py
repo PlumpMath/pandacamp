@@ -1,6 +1,6 @@
 from Panda import *
 
-model = [0]
+modelObject = [0]
 modelFile = [""]
 collisionObjects = [[]]
 collisionType = ["cyl"]
@@ -60,12 +60,12 @@ targetRect = rectangle(P3(ts* wallLeft,-ts* wallDepth,floor+1.001),P3(ts*wallRig
 
 rightRect = rectangle(lowerRight,frontRight,backRight,green)
 noseRect = rectangle(P3(-0.05, -1, 0.001), P3(0.05, -1, 0.001), P3(-0.05, -1, 0.1), yellow)
-model[0] = modelHandle(fileName = "panda-model.egg.pz", position = e.position, hpr = e.hpr, size=size*e.size)
+modelObject[0] = model(fileName = "panda-model.egg.pz", position = e.position, hpr = e.hpr, size=size*e.size)
 def setModel(x, mname):
     modelFile[0] = mname
-    if model[0] is not 0:
-        model[0].exit()
-    model[0] = modelHandle(fileName = mname , position = e.position, hpr = e.hpr, size=size*e.size)
+    if modelObject[0] is not 0:
+        modelObject[0].exit()
+    modelObject[0] = model(fileName = mname , position = e.position, hpr = e.hpr, size=size*e.size)
 
 text("Model Sizer")
 text("Mouse Controls Camera")
@@ -73,15 +73,15 @@ text("'q' = 10x larger, 'a' = 10x smaller")
 text("Size slider for finer scale detail.")
 text("u moves camera up, s to side")
 
-text(model[0].hpr, position=P2(1,.9))
-text(model[0].position,position=P2(1,.6))
-text(model[0].size, position=P2(1,.3))
+text(modelObject[0].hpr, position=P2(1,.9))
+text(modelObject[0].position,position=P2(1,.6))
+text(modelObject[0].size, position=P2(1,.3))
 directionalLight(color = white, hpr = HPR(lightangle, 0 ,0))
 ambientLight(color = color(.5, .5, .5))
 def printer(w, x):
-    dict = {"localSize": now(model[0].size),
-            "localPosition": now(model[0].position),
-            "localOrientation": now(model[0].hpr),
+    dict = {"localSize": now(modelObject[0].size),
+            "localPosition": now(modelObject[0].position),
+            "localOrientation": now(modelObject[0].hpr),
             "cRadius": now(cRadius),
             "cFloor": now(cBottom),
             "cTop": now(cTop),
@@ -89,8 +89,8 @@ def printer(w, x):
     file = Filename(modelFile[0])
     file.setExtension("model")
     saveDict(file.toOsSpecific(), dict, modelParameters)
-    print "localSize = " + str(model[0].size.now()) + ", localPosition = " + \
-        str(model[0].position.now()) + ", localOrientation = " + str(model[0].hpr.now()) + \
+    print "localSize = " + str(modelObject[0].size.now()) + ", localPosition = " + \
+        str(modelObject[0].position.now()) + ", localOrientation = " + str(modelObject[0].hpr.now()) + \
         ", cRadius = " + str(cRadius.now()) + ", cFloor = " + str(cBottom.now()) + \
         ", cTop = " + str(cTop.now()) + ", cType = '" + str(collisionType[0]) + "'"
     print "Wrote settings to " + str(file)
