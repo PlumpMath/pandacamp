@@ -1,11 +1,7 @@
-fileName,ralph.egg
-name,Ralph
-localSize,0.18,
-cRadius,0.2
-cFloor,0.0 
-cTop,1.0
+localOrientation,"7.49014077428e-07,0.0,0.0"
+localSize,0.21193229135
+cRadius,0.385964870453
 cType,cyl
-joints,neck","Neck","leftWrist","LeftWrist","rightWrist","RightWrist","jaw","Jaw","leftElbow","LeftElbow","rightShoulder","RightShoulder","leftShoulder","LeftShoulder","leftKnee","LeftKnee","rightKnee","RightKnee
-animations,walk","g.pandaPath + /models/Ralph/ralph-walk.egg
-frame = 4
-
+cFloor,0.0
+cTop,1.0
+localPosition,"0.0,0.0,-0.1228069067"
