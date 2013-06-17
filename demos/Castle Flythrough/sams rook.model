@@ -1,0 +1,9 @@
+fileName,sams rook.egg
+name,Tower
+localSize,5.86148922199
+localPosition,P3","0.02","0.16","0.00
+localOrientation,HPR","0.00","0.00","0.0
+cRadius,1.0
+cFloor,0.0
+cTop,1.0
+cType,cyl
