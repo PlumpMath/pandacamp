@@ -151,6 +151,7 @@ class Model(Handle):
              self.color.setBehavior(color)
         self.d.animPlaying = False # This initializes it so there is no animation playing.
         if texture is not None:
+            print "Texture for model " + name
             tex = findTexture(texture)
             self.d.currentTexture = texture
             self.d.model.setTexture(tex, 1)
@@ -181,7 +182,7 @@ class Model(Handle):
        if c.a != 0:   # This signals that there is no color to paint on the model
            self.d.model.setColor(c.toVBase4())
        texture = self.texture.now()
-       if texture != self.d.currentTexture:
+       if texture != "" and texture != self.d.currentTexture:
             texf = findTexture(texture)
             self.d.currentTexture = texture
             self.d.model.setTexture(texf, 1)
