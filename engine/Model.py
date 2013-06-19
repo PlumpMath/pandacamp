@@ -112,7 +112,12 @@ class Model(Handle):
                     undefinedSignal(self, 'frame') # ????  Bad error message ...
             else:
                 self.d.model = Actor.Actor(self.d.fileName)
-            for j,pj in joints:
+            for x in joints:
+                if isinstance(x, basestring):
+                    j = x
+                    pj = x
+                else:
+                    j, pj = x
                 self.d.jointNodes[j] = self.d.model.controlJoint(None, "modelRoot", pj)
                 if self.d.jointNodes[j] == None:
                     print 'joint not found: ' + j
