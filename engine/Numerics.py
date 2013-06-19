@@ -73,7 +73,7 @@ reverse = lift(reverseS, "reverse", infer = "interpolate")
 forever = lift(lambda i: repeatS(-1, i), "forever", infer = "interpolate")
 
 P3toHPR = lift(sP3toHPR, "P3toHPR", [P3Type], HPRType)
-p3toHpr = P3toHPR
+p3ToHpr = P3toHPR
 
 HPRtoP3 = lift(sHPRtoP3, "HPRtoP3", [HPRType], P3Type)
 hprToP3 = HPRtoP3

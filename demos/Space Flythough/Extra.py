@@ -34,10 +34,10 @@ def randomBunny(m,v):
     p.react(hit(p,b), blowUp)
     p.react(hit(b, missles), destruct)
 
-#reactions    
+#reactions
 c = alarm(step = 1.5)
 react(c, randomBunny)
-    
+
 p.react(lbp, shootBall)
 
 start()
