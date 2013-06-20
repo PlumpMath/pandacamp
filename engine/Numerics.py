@@ -31,6 +31,8 @@ getH      = lift(lambda v:v.h, "getH", [HPRType], numType)
 getP      = lift(lambda v:v.p, "getP", [HPRType], numType)
 getR      = lift(lambda v:v.r, "getR", [HPRType], numType)
 
+getUp     = lift(lambda hpr:getUpHPR(hpr), "getUp", [HPRType], P3Type)
+
 radians   = lift(math.radians, "radians", numType1, numType)
 degrees   = lift(math.degrees, "degrees", numType1, numType)
 sin       = lift(math.sin, "sin", numType1, numType)
