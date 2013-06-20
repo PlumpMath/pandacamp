@@ -155,7 +155,6 @@ def triangle(p1, p2, p3, color = None, position = None, hpr = None, size = None,
 
 def rectangle(p1, p2, p3, color = None, position=None, hpr=None, size=None, texture = None, side2 = None,
               texP1 = P2(0,0), texP2 = P2(1,0), texP3 = P2(0,1), texP4 = P2(1,1), duration = 0):
-
     if getPType(texture)==ColorType:
         color = texture
         texture = None
