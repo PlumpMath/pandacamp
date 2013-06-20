@@ -43,7 +43,11 @@ def penguin(**a):
     return model("Penguin/Penguin.egg", **a)
 
 def ralph(**a):
-    return model("Ralph/ralph.egg",**a )
+    return model("Ralph/ralph.egg", joints = [('neck', 'Neck'), ('leftWrist', 'LeftWrist'),
+                                 ('rightWrist', 'RightWrist'),
+                                 ('jaw', 'Jaw'), ('leftElbow', 'LeftElbow'),
+                                 ('rightShoulder', 'RightShoulder'), ('leftShoulder', 'LeftShoulder'), ('leftKnee', 'LeftKnee'),
+                                 ('rightKnee', 'RightKnee')], animations = {"walk" : g.pandaPath + "/models/Ralph/ralph-walk.egg"}, frame = 4, **a )
 
 def bee (**a):
     return model("Bee/Bee.egg", **a)
