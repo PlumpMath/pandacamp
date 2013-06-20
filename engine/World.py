@@ -209,7 +209,7 @@ allKeyNames = ["escape", "f1","f2","f3","f4","f5","f6","f7","f8","f9","f10","f11
 
 keyRenamings = {"upArrow": "arrow_up", "downArrow": "arrow_down",
                 "leftArrow": "arrow_left", "rightArrow": "arrow_right",
-                "pageUp": "page_up", "pageDown": "page_down"}
+                "pageUp": "page_up", "pageDown": "page_down", " ": "space"}
                 
 def checkValidKey(s):
     if s in keyRenamings:

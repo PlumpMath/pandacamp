@@ -86,13 +86,16 @@ def likeFountainWater(color = blue, endColor = green, size = 1, poolSize = 10000
                       emissionType = emissionType, amplitude = amplitude,
                       amplitudeSpread = amplitudeSpread, lineScaleFactor = lineScaleFactor, radius = radius, **args)
 
-def shakenSparkles(size = 1, poolSize = 20000, birthRate = 0.0200, litterSize = 10,
-                   lifeSpanBase = 3.00, terminalVelocityBase = 400.000, emissionType = "ETRADIATE",
-                   amplitude = 1.00, amplitudeSpread = 0.00, lineScaleFactor = 7.00, **args):
-  return PEffect(particleFile = 'ShakenSparkles.py',size = size, poolSize = poolSize,
-                 colorType = "image", birthRate = birthRate, litterSize = litterSize, lifeSpanBase = lifeSpanBase,
-                 terminalVelocityBase = terminalVelocityBase, emissionType = emissionType,
-                 amplitude = amplitude, amplitudeSpread = amplitudeSpread, lineScaleFactor = lineScaleFactor, **args)
+#  Currently crashes ppython
+#def shakenSparkles(size = 1, poolSize = 20000, birthRate = 0.0200, litterSize = 10,
+#                   lifeSpanBase = 3.00, terminalVelocityBase = 400.000, emissionType = "ETRADIATE",
+#                   amplitude = 1.00, amplitudeSpread = 0.00, lineScaleFactor = 7.00, **args):
+#  return PEffect(particleFile = 'ShakenSparkles.py',size = size, poolSize = poolSize,
+#                 colorType = "image", birthRate = birthRate, litterSize = litterSize, lifeSpanBase = lifeSpanBase,
+#                 terminalVelocityBase = terminalVelocityBase, emissionType = emissionType,
+#                 amplitude = amplitude, amplitudeSpread = amplitudeSpread, lineScaleFactor = lineScaleFactor, **args)
+
+shakenSparkles = likeFountainWater
 
 def warpSpeed(color = white, endColor = blue, size = 1, poolSize = 2000,
               birthRate = 0.0500, litterSize = 15, lifeSpanBase = 5.00,
