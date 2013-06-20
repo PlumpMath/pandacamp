@@ -48,7 +48,7 @@ pandaParameters = { "localSize" : 0.00178,
                     "localOrientation" : HPR(0, 0, 0)}
 
 def model(fileName, name = None, size = None, hpr = None, position = None, color = None,
-                 control = None, texture = None, duration = 0, kind = None):
+                 control = None, texture = None, duration = 0, joints = [], animations = None, frame = None, kind = None):
    res = Model(fileName, name, size, hpr, position, color,
                 control, texture, duration, kind)
    return res

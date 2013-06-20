@@ -141,7 +141,7 @@ def csvUnquote(s):
 def findTexture(fileName):
     tFile = fileSearch(fileName, "textures", ["jpg", "gif", "png", "jpeg"])
     if tFile is None:
-        tFile = FileName(g.pandaPath + "/textures/default.jpg")
+        tFile = fileSearch(g.pandaPath + "/textures/default.jpg")
     return loader.loadTexture(tFile)
 
 def findSound(fileName):

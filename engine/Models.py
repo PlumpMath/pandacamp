@@ -43,7 +43,11 @@ def penguin(**a):
     return model("Penguin/Penguin.egg", **a)
 
 def ralph(**a):
-    return model("Ralph/ralph.egg",**a )
+    return model("Ralph/ralph.egg", joints = [('neck', 'Neck'), ('leftWrist', 'LeftWrist'),
+                                 ('rightWrist', 'RightWrist'),
+                                 ('jaw', 'Jaw'), ('leftElbow', 'LeftElbow'),
+                                 ('rightShoulder', 'RightShoulder'), ('leftShoulder', 'LeftShoulder'), ('leftKnee', 'LeftKnee'),
+                                 ('rightKnee', 'RightKnee')], animations = {"walk" : g.pandaPath + "/models/Ralph/ralph-walk.egg"}, frame = 4, **a )
 
 def bee (**a):
     return model("Bee/Bee.egg", **a)
@@ -83,7 +87,20 @@ def slipperyRoadSign(**a):
 def bowlingPins(**a):
     return model ("bowlingpins/bowlingpins.egg", **a)
 
-
+def sonic(**a):#Works as of 6-23-08 ~ Kendric
+    return model("sonic/sonic.egg",
+                       joints = [('neck', 'Neck'), ('leftEyeBrow', 'LeftEyeBrow'), ('rightEyeBrow', 'RightEyeBrow'),
+                                 ('leftLowerSpike', 'LeftLowerSpike'), ('lowerRightSpike', 'LowerRightSpike'),
+                                 ('topSpike', 'TopSpike'), ('leftMiddleSpike', 'LeftMiddleSpike'),
+                                 ('rightMiddleSpike', 'RightMiddleSpike'), ('lowerSpike', 'LowerSpike'),
+                                 ('jaw', 'Jaw'),
+                                 ('leftShoulder', 'LeftShoulder'), ('rightShoulder', 'LeftShoulder1'),
+                                 ('leftElbow', 'LeftElbow'), ('rightElbow', 'LeftElbow1'),
+                                 ('leftWrist', 'LeftWrist'), ('rightWrist', 'LeftWrist1'),
+                                 ('leftHip', 'LeftHip'), ('rightHip', 'RightHip'),
+                                 ('leftKnee', 'LeftKnee'), ('rightKnee', 'RightKnee'),
+                                 ('leftAnkle', 'LeftAnkle'), ('rightAnkle', 'RightAnkle'), ], animations = {"walk" : g.pandaPath + "/models/sonic/sonic-run.egg"},
+                                 defaultAnimation = "walk", frame = 11, **a)
 
 # Jointed Models
 
@@ -125,21 +142,7 @@ def farmSky(**a):
 #jointed models
 
 
-def sonic(**a):#Works as of 6-23-08 ~ Kendric
-    return model("sonic/sonic.egg", name = "Sonic",
-                       localSize = 0.036,  localOrientation = HPR(0,   0.66-1.27,   0.00),
-                       joints = [('neck', 'Neck'), ('leftEyeBrow', 'LeftEyeBrow'), ('rightEyeBrow', 'RightEyeBrow'),
-                                 ('leftLowerSpike', 'LeftLowerSpike'), ('lowerRightSpike', 'LowerRightSpike'),
-                                 ('topSpike', 'TopSpike'), ('leftMiddleSpike', 'LeftMiddleSpike'),
-                                 ('rightMiddleSpike', 'RightMiddleSpike'), ('lowerSpike', 'LowerSpike'),
-                                 ('jaw', 'Jaw'),
-                                 ('leftShoulder', 'LeftShoulder'), ('rightShoulder', 'LeftShoulder1'),
-                                 ('leftElbow', 'LeftElbow'), ('rightElbow', 'LeftElbow1'),
-                                 ('leftWrist', 'LeftWrist'), ('rightWrist', 'LeftWrist1'),
-                                 ('leftHip', 'LeftHip'), ('rightHip', 'RightHip'),
-                                 ('leftKnee', 'LeftKnee'), ('rightKnee', 'RightKnee'),
-                                 ('leftAnkle', 'LeftAnkle'), ('rightAnkle', 'RightAnkle'), ], animations = {"walk" : g.pandaPath + "/models/sonic/sonic-run.egg"},
-                                 defaultAnimation = "walk", frame = 11, **a)
+
 
 
 def bender(**a):

@@ -34,10 +34,10 @@ def driving(model, p0, hpr0):
 #    soundmove.play()
 
 #    play("engine.mp3")
-    a1 = hold(0, key("arrow_right",  1) + keyUp("arrow_right",  0))
-    a2 = hold(0, key("arrow_left",  -1) + keyUp("arrow_left",  0))
-    a3 = hold(0, key("arrow_up",  -1) + keyUp("arrow_up",  0))
-    a4 = hold(0, key("arrow_down",  1) + keyUp("arrow_down",  0))
+    a1 = hold(0, key("rightArrow",  1) + keyUp("rightArrow",  0))
+    a2 = hold(0, key("leftArrow",  -1) + keyUp("leftArrow",  0))
+    a3 = hold(0, key("upArrow",  -1) + keyUp("upArrow",  0))
+    a4 = hold(0, key("downArrow",  1) + keyUp("downArrow",  0))
     delta = a1 + a2
     dspeed = a3 + a4
 

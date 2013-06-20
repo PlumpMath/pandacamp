@@ -62,7 +62,7 @@ class Racetrack:
              RaceTile(0,0, False, "w"),         # Water
              RaceTile(0.95,0.95, True, "x"),    # Wall
              RaceTile(0.45,0.35, False, "r")]   # road
-             
+
         nt = len(t)
         i = 0.0
         for tile in t:
@@ -114,7 +114,7 @@ class Racetrack:
                         floorRect(x, y, feature)
         trackMesh = mesh(meshpts, meshtxt, meshtri, meshcol)
         self.trackModel = GeometryHandle(trackMesh, position = P3(0,0,0), hpr = HPR(0,0,0), size = 1, texture = "track.jpg")
-    
+
 
 
     # Returns the friction of the current surface

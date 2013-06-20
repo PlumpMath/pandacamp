@@ -1,5 +1,6 @@
 
 from modelsMedevil import*
+
 al = ambientLight(color = color(.8 , .8 , .8 ))
 directionalLight (hpr = hpr(0,0,pi), color =color(.8,.9,.9) )
 launchCamera("medevil")
@@ -64,18 +65,7 @@ for i in range(20):
         axe(position = p3(i*210-1650,-1900,0), size = 25, hpr = hpr(pi, 0,0))
 for i in range(20):
         mace(position = p3(i*210-1650,-2000,0), size = 25, hpr = hpr(pi, 0,0))
-#def fireGuns(m,v):
-    #for a in army.allModels():
-        #g = p3(0,0,integral(5))
-        #v = p3(0,integral(8),0)+g
-        #blimp(position =a.position + v, size = 25, collection = amo)
-#def exitGuns(m,v):
-    #for b in amo.allModels():
-        #b.exit
 
-#a = alarm(step =2)
-#react(a , fireGuns)
-#react(hit(amo.allModels(), walls.allModels()), exitGuns)
 
 
 
