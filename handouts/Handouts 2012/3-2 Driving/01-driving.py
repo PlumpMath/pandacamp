@@ -3,7 +3,7 @@
 # In virtual worlds there are different ways to recreate movement seen in the real world.
 # In this file we try to recreate the movement of a car using
 # Read the code along with the comments and try to understand how the behavior of a real car is being recreated.
-# 
+#
 # Run the file and drive the car around using the mouse to steer (move left and right) and to accelerate (move up and down).
 # Does this car behave like a real car?
 # Try running the next file and compare the two. Does this still seem realistic?

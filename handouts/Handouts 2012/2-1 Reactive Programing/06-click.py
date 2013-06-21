@@ -15,7 +15,7 @@ def randomPanda(m, v):
 # Alarm generates an event at a given timestep (step)
 
 c = alarm(step = .8)
-react(c, randomPanda)    
+react(c, randomPanda)
 
 
 # Turn this into a game by doing the following:

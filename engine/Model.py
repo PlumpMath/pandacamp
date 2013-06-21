@@ -156,6 +156,7 @@ class Model(Handle):
              self.color.setBehavior(color)
         self.d.animPlaying = False # This initializes it so there is no animation playing.
         if texture is not None:
+            print "Texture for model " + name
             tex = findTexture(texture)
             self.d.currentTexture = texture
             self.d.model.setTexture(tex, 1)
