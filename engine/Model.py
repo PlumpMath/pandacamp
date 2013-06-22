@@ -14,7 +14,7 @@ from Types import *
 from Switchers import *
 from Handle import *
 from FileUtils import *
-from FRP import localTimeIs
+from FRP import wait
 from Collection import getCollection
 
 # This fills in all of the defaults

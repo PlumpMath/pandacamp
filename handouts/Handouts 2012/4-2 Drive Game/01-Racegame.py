@@ -61,7 +61,7 @@ def spinout(model, var):
     model.hpr = hpr0 + hpr(integral(20 * (1 - localTime / 3)),0,0)
     soundwipeout.play()
     # drive away
-    model.react1(localTimeIs(3), driveReset)
+    model.react1(wait(3), driveReset)
 
 def chp(hpr):
     return hpr(getH(hpr), -getP(hpr), getR(hpr))
@@ -93,7 +93,7 @@ def burning(model, p0, hpr0):
     fireish(position = p0, duration = 1)
 
     # reset the model
-    model.react1(localTimeIs(1), respawn)
+    model.react1(wait(1), respawn)
 
 def respawn(m, v):
     driving(car, p3(4,4,0), pi/2, 0)
@@ -118,12 +118,12 @@ def wallburn(model, var):
 def powerUp(model, var):
     p = now(model.position)
     s = shakenSparkles(position = p)
-    s.react1(localTimeIs(1), stopIt)
+    s.react1(wait(1), stopIt)
 
 def explosion(model, var):
     p = now(model.position)
     s = fireish(position = p)
-    s.react1(localTimeIs(1), stopIt)
+    s.react1(wait(1), stopIt)
 
 # end item reactions
 
