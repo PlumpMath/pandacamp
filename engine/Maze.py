@@ -141,7 +141,7 @@ class Maze:
         return res
         
 
-# This creates a solid cube in the maze.  There are siz textures.  The first texture is the default.
+# This creates a solid cube in the maze.  There are six textures.  The first texture is the default.
 # x and y are in maze coordinates.
 # If no color is given a random color is chosen.
 def mazeCube(x,y,col = None,north=None,south=None,east=None,west=None,top=None,bottom=None):
