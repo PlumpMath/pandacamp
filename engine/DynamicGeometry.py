@@ -1,15 +1,16 @@
-from g import *
+
+# Todo: add code for surface normals
+
+from g import*
+
 from Types import *
 from Handle import *
-from FileUtils import findTexture
+from Model import findTexture
 
 class GeometryHandle(Handle):
-    def __init__(self, model, position=None, hpr=None, size = 1, color = None, texture = None,\
-          texture2 = None, duration = 0, kind = None, sideTwo = None):
+    def __init__(self, object, position=None, hpr=None, size = 1, color = None, texture = None, duration = 0):
         Handle.__init__(self, name="dynamicGeometry", duration = duration)
-        self.d.model = model
-        self.d.twoSided = sideTwo is not None
-        self.d.sideTwo = sideTwo
+        self.d.model = object
         g.nextModelId = g.nextModelId + 1
         self.d.model.setTag('rpandaid', str(g.nextModelId))
         self.d.onScreen = False
@@ -19,8 +20,6 @@ class GeometryHandle(Handle):
         self.__dict__['hpr']   = newSignalRefd(self, 'hpr', HPRType, HPR(0,0,0), ctl)
         self.__dict__['size'] = newSignalRefd(self, 'size', numType, 1, ctl)
         self.__dict__['color'] = newSignalRefd(self, 'color', ColorType, noColor, ctl)
-        self.__dict__['texture'] = newSignalRefd(self, 'texture', stringType, "", ctl)
-        self.__dict__['texture2'] = newSignalRefd(self, 'texture2', stringType, "", ctl)
         if size is not None:
              self.size.setBehavior(size)
         if position is not None:
@@ -29,16 +28,9 @@ class GeometryHandle(Handle):
              self.hpr.setBehavior(hpr)
         if color is not None:
              self.color.setBehavior(color)
-        self.d.currentTexture = ""
-        self.d.currentTexture2 = ""
         if texture is not None:
-            self.texture.setBehavior(texture)
-        if texture2 is not None:
-            self.texture2.setBehavior(texture2)
-        if kind is not None:
-            getCollection(kind).add(self)
-        if sideTwo is not None:
-            sideTwo.reparentTo(self)
+          tex = findTexture(texture)
+          self.d.model.setTexture(tex)
 
     def refresh(self):
         Handle.refresh(self)
@@ -52,29 +44,22 @@ class GeometryHandle(Handle):
         c = self.color.now()
         if c.a != 0:   # This signals that there is no color to paint on the model
            self.d.model.setColor(c.toVBase4())
-        texture = self.texture.now()
-        if texture != "" and texture != self.d.currentTexture:
-            texf = findTexture(texture)
-            self.d.currentTexture = texture
-            self.d.model.setTexture(texf, 1)
-        texture2 = self.texture2.now()
-        if texture2 != "" and texture2 != self.d.currentTexture2 and self.d.twoSided:
-            self.d.sideTwo.texture = texture2
     def kill():
         self.d.model.hide()
-        if self.d.twoSided:
-            self.d.sideTwo.hide()
     def showModel(self):
         if not self.d.onScreen:
            # self.d.model.reparentTo(render)
            self.d.onScreen = True
     def show():
         self.d.model.show()
-        if self.d.twoSided:
-            self.d.sideTwo.show()
     def reparentTo(self, handle):
         self.d.model.reparentTo(handle.d.model)
-
+    def setTexture(self, texture):
+        tex = loader.loadTexture(findTexture(texture))
+        self.d.model.setTexture(tex)
+    def setTexture2(self, texture):
+        if self.d.twoSided:
+            self.d.sideTwo.setTexture(texture)
 
 # This creates a model on the fly.  The array of spacePoints and texturePoints have to be the same length.
 # The spacePoints contains P3 objects and texturePoints contains P2 objects.
@@ -147,25 +132,28 @@ def emptyModel(color = None, position = None, hpr = None, size = None, duration 
     return result
 
 def triangle(p1, p2, p3, color = None, position = None, hpr = None, size = None, texture = None, texP1 = P2(0,0), \
-             texP2 = P2(1, 0), texP3 = P2(0, 1),texture2 = None,duration = 0):
+             texP2 = P2(1, 0), texP3 = P2(0, 1), side2 = None,duration = 0):
     #checking to ensure that the second argument is an instance of the third argument
     #The first and fourth are for error handling.
     checkKeyType("triangle", p1, P3Type, "p1")
     checkKeyType("triangle", p2, P3Type, "p2")
     checkKeyType("triangle", p3, P3Type, "p3")
     nodePath = mesh([p1, p2, p3], [texP1, texP2, texP3], [[0,1,2]], white)
-    sideTwo = None
-    if (texture2 is not None):
+    if (side2 is not None):
         nodePath.setTwoSided(False)
-        sideTwo = triangle(p2, p1, p3, texture = texture2, texP1 = texP1, texP2 = texP2, texP3 = texP3)
-        sideTwo.d.model.setTwoSided(False)
-    result = GeometryHandle(model = nodePath, position = position, hpr = hpr, size = size, \
-                            color = color, texture = texture, texture2 = texture2, \
-                            sideTwo = sideTwo, duration = duration)
+        result = GeometryHandle(nodePath, position, hpr, size, color, texture)
+        if side2 is not False:
+            otherSide = triangle(p2, p1, p3, texture = side2, side2 = False, texP1 = texP1, texP2 = texP2, texP3 = texP3)
+            otherSide.reparentTo(result)
+            result.d.twoSided = True
+            result.d.sideTwo = otherSide
+        return result
+    result = GeometryHandle(nodePath, position, hpr, size, color, texture, duration = duration)
+    result.d.twoSided = False
     result.d.model.setScale(0)
     return result
 
-def rectangle(p1, p2, p3, color = None, position=None, hpr=None, size=None, texture = None, texture2 = None,
+def rectangle(p1, p2, p3, color = None, position=None, hpr=None, size=None, texture = None, side2 = None,
               texP1 = P2(0,0), texP2 = P2(1,0), texP3 = P2(0,1), texP4 = P2(1,1), duration = 0):
     if getPType(texture)==ColorType:
         color = texture
@@ -180,14 +168,17 @@ def rectangle(p1, p2, p3, color = None, position=None, hpr=None, size=None, text
     checkKeyType("rectangle", p3, P3Type, "p3")
     p4 = p3 + p2 - p1
     nodePath = mesh([p1, p2, p3, p4], [texP1, texP2, texP3, texP4], [[0,1,2], [2, 1, 3]], white)
-    sideTwo = None
-    if (texture2 is not None):
+    if (side2 is not None):
         nodePath.setTwoSided(False)
-        sideTwo = rectangle(p2, p1, p4, texture = texture2, texP1 = texP1, texP2 = texP2, texP3 = texP3, texP4 = texP4)
-        sideTwo.d.model.setTwoSided(False)
-    result = GeometryHandle(model = nodePath, position = position, hpr = hpr, size = size, \
-                            color = color, texture = texture, texture2 = texture2, \
-                            sideTwo = sideTwo, duration = duration)
+        result = GeometryHandle(nodePath, position, hpr, size, color, texture)
+        if side2 is not False:
+            otherSide = rectangle(p2, p1, p4, texture = side2, side2 = False, texP1 = texP1, texP2 = texP2, texP3 = texP3, texP4 = texP4)
+            otherSide.reparentTo(result)
+            result.d.twoSided = True
+            result.d.sideTwo = otherSide
+        return result
+    result = GeometryHandle(nodePath, position, hpr, size, color, texture, duration = duration)
+    result.d.twoSided = False
     result.d.model.setScale(0)  # Hack - this is rendered too soon and we get 1 frame before update.  This keeps the model invisible
                                 # until the first refresh
     return result
@@ -346,9 +337,9 @@ def surface(f, xmin = -10, xmax = 10, ymin = -10, ymax = 10, slices = 40, dx = N
                 tri.extend([t1, t2])
             p = p + 1
     nodePath = mesh(ver, tex, tri, white)
-    result = GeometryHandle(model = nodePath, position = position, hpr = hpr,\
-                            size = size, color = color, texture = texture)
-    result.d.model.setScale(0)  # Hack to suppress first frame
+    result = GeometryHandle(nodePath, position, hpr, size, color, texture)
+    result.d.twoSided = False
+    result.d.model.setScale(0)
     result.f = static(lift(f, "Surface function", numType2, numType))
     result.normal = static(lift(surfaceNormal, "Surface Normal", numType2, numType))
     result.dx = static(lift(parX, "X Partial", numType2, numType))

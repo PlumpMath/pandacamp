@@ -118,6 +118,7 @@ class Model(Handle):
                     pj = x
                 else:
                     j, pj = x
+                print "joint "+str(j)+" "+ str(pj)
                 self.d.jointNodes[j] = self.d.model.controlJoint(None, "modelRoot", pj)
                 if self.d.jointNodes[j] == None:
                     print 'joint not found: ' + j
