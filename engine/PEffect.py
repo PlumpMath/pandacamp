@@ -10,6 +10,7 @@ import PEffect
 import g
 from Handle import *
 from FRP import wait
+from FileUtils import *
 from pandac.PandaModules import *
 from direct.particles.Particles import *
 from direct.particles.ParticleEffect import *
@@ -158,77 +159,27 @@ def smokeTail(color = white, endColor = white, size = 1, poolSize = 60000,
                  amplitude = amplitude, amplitudeSpread = amplitudeSpread, lineScaleFactor = lineScaleFactor, **args)
 
 class PEffect(Handle):
-    """
-    PEffect(Handle):
-    """
+
     pid = 1
-    def __init__(self, name = None, particleFile = "LikeFountainWater.py",
-                defaultPath = True, parent = render, hpr = None, position = None,
-                colorType = None, color = gray, endColor = None,
-                size = None, birthRate = None, poolSize = None, litterSize = None,
-                lineScaleFactor = None, lifeSpanBase = None, terminalVelocityBase = None,
-                texture = None, amplitude = None, amplitudeSpread = None,
-                emissionType = "ETRADIATE", radius = None, radiusSpread = None ,
-                duration = 0):
+    def __init__(self, particleFn, name = None,
+               hpr = None, position = None,
+              
+                size = None,
+                duration = 0, ** a):
 
-        """Initalizes the PEffect.
-
-        PEffect __init__(self,
-                        name = 'PEffect',
-                        particleFile = "LikeFountainWater.py",
-                        defaultPath = True,
-                        parent = render,
-                        hpr = None,
-                        position = None,
-                        color = gray,
-                        startColor = None ,
-                        endColor = None,
-                        headColor = None,
-                        tailColor = None,
-                        birthRate = None,
-                        poolSize = None,
-                        litterSize = None,
-                        lineScaleFactor = None,
-                        lifeSpanBase = None,
-                        terminalVelocityBase = None,
-                        amplitude = None,
-                        amplitudeSpread = None,
-                        particlePic = None
-                        ):
-        """
-        if texture is not None:
-            g.texture = findTexture(texture)
         if name is None:
             name = 'PEffect-%d' % PEffect.pid
             PEffect.pid += 1
 
         Handle.__init__(self, name = name)
-        self.d.colorType = colorType
 
         #pathname = "/lib/panda/lib/lib-original/particles/"
         base.enableParticles()
         p = ParticleEffect()
-
-        self.__dict__[name] = p
-        self.particleName = name
+        particleFn(p, a)
         self.d.model = p  # ???
 
-        if defaultPath:
-            # print particleFile
-            p.loadConfig(Filename(g.pandaPath+"/particles/"+ particleFile))
-        else:
-            p.loadConfig(Filename(particleFile))
 
-        pd = p.particlesDict["particles-1"]
-
-        if emissionType is not None:
-            if emissionType is "ETRADIATE":
-                pd.emitter.setEmissionType(BaseParticleEmitter.ETRADIATE)  #emitter type ETEXPICIT ETCUSTOM, ETRADIATE
-            elif emissionType is "ETCUSTOM":
-                pd.emitter.setEmissionType(BaseParticleEmitter.ETCUSTOM)
-        if radius is not None:
-                    self.__dict__['radius'] = newSignalRef(self, 'radius', numType, radius)
-        checkKeyType('PEffect', name, stringType, 'name')
 
         self.__dict__['position'] = newSignalRef(self, 'position', P3Type)
 #        self.__dict__['color'] = newSignalRefd(self, 'color', ColorType,color)
@@ -237,84 +188,24 @@ class PEffect(Handle):
         self.__dict__['size'] = newSignalRefd(self, 'size', numType, 1)
         if size is not None:
              self.size.setBehavior(size)
-        self.__dict__['color'] = newSignalRefd(self,'color',ColorType,color)# color at which the effect will start
-        if endColor is None:
-            endColor = color
-        self.__dict__['endColor'] = newSignalRefd(self,'endColor',ColorType,endColor)# color at which the effect will end at
-        self.color.setBehavior(color)
-        if lineScaleFactor is not None:
-            self.__dict__['LineScaleFactor'] = newSignalRefd(self,'LineScaleFactor',numType,lineScaleFactor) #how long a particle is
-        if poolSize is not None:
-            self.__dict__['PoolSize'] = newSignalRefd(self,'PoolSize',numType,poolSize) #Number of particles avaiable for the entire effect
-        if birthRate is not None:
-            self.__dict__['BirthRate'] = newSignalRefd(self,'BirthRate',numType,birthRate) #The rate in which the particle effect occurs
-        if litterSize is not None:
-            self.__dict__['LitterSize'] = newSignalRefd(self,'LitterSize',numType,litterSize) #Number of particles per effect occcurance
-        if lifeSpanBase is not None:
-            self.__dict__['LifeSpanBase']  = newSignalRefd(self,'LIfeSpanBase',numType,lifeSpanBase) #How long the particle effect stays on screen
-        if terminalVelocityBase is not None:
-            self.__dict__['TerminalVelocityBase'] = newSignalRefd(self,'TerminalVelocityBase',numType,terminalVelocityBase) #how fast the particles move
-        if amplitude is not None:
-            self.__dict__['Amplitude'] = newSignalRefd(self,'Amplitude', numType, amplitude)#amplitude is the spreading out of particles
-        if amplitudeSpread is not None:
-            self.__dict__['AmplitudeSpread'] = newSignalRefd(self,'AmplitudeSpread',numType,amplitudeSpread)#amplitude multiplier spreadings of particles.
-
+  
         if position is not None:
             self.position.setBehavior(position)
         if hpr is not None:
             self.hpr.setBehavior(hpr)
-        if color is not None:
-            self.color.setBehavior(color)
-        if endColor is not None:
-            self.endColor.setBehavior(endColor)
-        if parent is not render:
-            self.__dict__['parent'] = parent.d.model
+
 
         p.reparentTo(render)
         p.start()
         #Had to use this hack because the refresh function kept restarting the particle effects.
-        self.__dict__["started"] = True
         if duration != 0:
             self.react1(wait(duration), lambda m, v: m.exit())
 
     def refresh(self):
-        """
-        refresh(self):
-            refreshes the variables in the effect
-        """
-        name = self.name
-        p = self.__dict__[name]#particle effect on our level
-        Handle.refresh(self)
-        if self.__dict__["started"]:
-            p0 = p.particlesDict["particles-1"] #particle effect on panda 3d level
-            pr = p0.renderer# renderer settings use this prefix
-            pf = p0.factory# factory settings use this prefix
-            pe = p0.emitter# emitter settings use this prefix
-            #renderer based settings
-            if self.d.colorType == "startEnd":
-              pr.setStartColor(self.__dict__['color'].now().toVBase4())
-              pr.setEndColor(self.__dict__['endColor'].now().toVBase4())
-            elif self.d.colorType == "headTail":
 
-              pr.setHeadColor(self.__dict__['color'].now().toVBase4())
-              pr.setTailColor(self.__dict__['endColor'].now().toVBase4())
-    #        if self.lineScaleFactor is not None:
-    #            pr.setLineScaleFactor(self.__dict__['LineScaleFactor'].now())
-    #        if self.headColor is not None:
-    #            pr.setHeadColor(self.__dict__['HeadColor'].now().toVBase4())
-    #        if self.tailColor is not None:
-    #            pr.setTailColor(self.__dict__['TailColor'].now().toVBase4())
-            #basic particle settings
-            #had to comment this one out because it would randomly cause incredible slowdown
-            #p0.setPoolSize(self.__dict__['PoolSize'].now())
-            p0.setBirthRate(self.__dict__['BirthRate'].now())
-            p0.setLitterSize(int(self.__dict__['LitterSize'] .now()))
-            #factory based settings
-            pf.setLifespanBase(self.__dict__['LifeSpanBase'] .now())
-            pf.setTerminalVelocityBase(self.__dict__['TerminalVelocityBase'].now())
-            #emitter based settings
-            pe.setAmplitude(self.__dict__['Amplitude'].now())
-            pe.setAmplitudeSpread(self.__dict__['AmplitudeSpread'].now())
+        p = self.d.model
+        Handle.refresh(self)
+        
 
         position = self.__dict__['position'].now()
         x = getX(position)
@@ -372,3 +263,61 @@ def blowUp(effect = explosions, time = 2, size = 1, offset = P3(0,0,0)):
         e.react1(wait(2), exitScene)
         model.exit()
     return r
+
+def fireFn(self, dict):
+
+    self.reset()
+    self.setPos(0.000, 0.000, 0.000)
+    self.setHpr(0.000, 0.000, 0.000)
+    self.setScale(1.000, 1.000, 1.000)
+    p0 = Particles.Particles('particles-1')
+    # Particles parameters
+    p0.setFactory("PointParticleFactory")
+    p0.setRenderer("SpriteParticleRenderer")
+    p0.setEmitter("DiscEmitter")
+    p0.setPoolSize(1024)
+    p0.setBirthRate(0.0200)
+    p0.setLitterSize(10)
+    p0.setLitterSpread(0)
+    p0.setSystemLifespan(1200.0000)
+    p0.setLocalVelocityFlag(1)
+    p0.setSystemGrowsOlderFlag(0)
+    # Factory parameters
+    p0.factory.setLifespanBase(0.5000)
+    p0.factory.setLifespanSpread(0.0000)
+    p0.factory.setMassBase(1.0000)
+    p0.factory.setMassSpread(0.0000)
+    p0.factory.setTerminalVelocityBase(400.0000)
+    p0.factory.setTerminalVelocitySpread(0.0000)
+    # Point factory parameters
+    # Renderer parameters
+    p0.renderer.setAlphaMode(BaseParticleRenderer.PRALPHAOUT)
+    p0.renderer.setUserAlpha(0.22)
+    # Sprite parameters
+    #print __import__("g").texture
+    p0.renderer.setTexture(findTexture(dict["texture"]))
+    p0.renderer.setColor(Vec4(1.00, 1.00, 1.00, 1.00))
+    p0.renderer.setXScaleFlag(1)
+    p0.renderer.setYScaleFlag(1)
+    p0.renderer.setAnimAngleFlag(0)
+    p0.renderer.setInitialXScale(0.0050)
+    p0.renderer.setFinalXScale(0.0200)
+    p0.renderer.setInitialYScale(0.0100)
+    p0.renderer.setFinalYScale(0.0200)
+    p0.renderer.setNonanimatedTheta(0.0000)
+    p0.renderer.setAlphaBlendMethod(BaseParticleRenderer.PPNOBLEND)
+    p0.renderer.setAlphaDisable(0)
+    # Emitter parameters
+    p0.emitter.setEmissionType(BaseParticleEmitter.ETRADIATE)
+    p0.emitter.setAmplitude(1.0000)
+    p0.emitter.setAmplitudeSpread(0.0000)
+    p0.emitter.setOffsetForce(Vec3(0.0000, 0.0000, 3.0000))
+    p0.emitter.setExplicitLaunchVector(Vec3(1.0000, 0.0000, 0.0000))
+    p0.emitter.setRadiateOrigin(Point3(0.0000, 0.0000, 0.0000))
+    # Disc parameters
+    p0.emitter.setRadius(0.5000)
+    self.addParticles(p0)
+
+def fire1(texture = "fire.png", **a):
+    a["texture"] = texture
+    PEffect(fireFn, name = "fire", **a)
