@@ -74,7 +74,7 @@ def spinout(model, var):
     model.hpr = hpr0 + HPR(integral(20 * (1 - localTime / 3)),0,0)
     play("bad.mp3")
     # drive away
-    model.react1(localTimeIs(3), restartCar)
+    model.react1(wait(3), restartCar)
 
 
 driving(car, P3(4,4,0), HPR(pi/2, 0, 0))
