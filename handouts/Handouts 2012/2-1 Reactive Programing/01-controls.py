@@ -12,8 +12,8 @@ p = panda()
 grassScene()
 
 # Use each of these to move the panda in some way.  You can set either the position or the hpr or even the color
-# 
-p.position = P3(time, 0, 0)   # Example: use the time to move the panda right
+#
+p.position = p3(time, 0, 0)   # Example: use the time to move the panda right
 # Try to use the mouse to control the panda in some way - the 2-D coordinate of the mouse
 # can't be used in the 3-D world directly.
 # Make a slider to control the panda position

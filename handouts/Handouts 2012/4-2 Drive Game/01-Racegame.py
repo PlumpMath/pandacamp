@@ -45,9 +45,9 @@ def driving(model, p0, h0, speed0):
     model.hpr = hpr(h,0,0)
     model.velocity = p3c(speed1,h-pi/2,0)
     model.position = p0 + integral(model.velocity)
-    model.when1(abs(model.angle*abs(model.velocity)*abs(model.velocity)) > spinThresh, spinout)
-    model.when1(track.inWall(model), wallburn)
-    model.react1(key(" "), jump)
+    when1(model, abs(model.angle*abs(model.velocity)*abs(model.velocity)) > spinThresh, spinout)
+    when1(model, track.inWall(model), wallburn)
+    react1(model, key(" "), jump)
 
 def driveReset(model, var):
     drive(model, var, resetSpeed = 1)
@@ -75,9 +75,9 @@ def jump(model, var):
     model.velocity = p3(getX(v0), getY(v0), 1.5) + integral(p3(0,0,-1))
     model.position = p0 + integral(model.velocity)
 
-    model.hpr = chp(p3tohpr(deriv(model.position, hprToP3(hpr0))))
+    model.hpr = chp(p3ToHpr(deriv(model.position, hprToP3(hpr0))))
 
-    model.when1(getZ(model.position)<0, drive)
+    when1(model, getZ(model.position)<0, drive)
 
 def drive(model, var, resetSpeed = 0):
     p0 = now(model.position)
@@ -93,7 +93,7 @@ def burning(model, p0, hpr0):
     fireish(position = p0, duration = 1)
 
     # reset the model
-    model.react1(wait(1), respawn)
+    react1(model, wait(1), respawn)
 
 def respawn(m, v):
     driving(car, p3(4,4,0), pi/2, 0)
@@ -123,7 +123,7 @@ def powerUp(model, var):
 def explosion(model, var):
     p = now(model.position)
     s = fireish(position = p)
-    s.react1(wait(1), stopIt)
+    react1(s, wait(1), stopIt)
 
 # end item reactions
 

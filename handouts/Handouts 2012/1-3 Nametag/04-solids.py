@@ -5,7 +5,7 @@ from Panda import *
 
 a = photoWheel(["realpanda.jpg", "camplogo.jpg", "hurst.jpg" , "realpanda.jpg", "camplogo.jpg", "hurst.jpg"])
 
-a.hpr = HPR(time*2, sin(time), 0)
+a.hpr = hpr(time*2, sin(time), 0)
 
 
 #cube(t1, t2, t3, t4, t5, t6)
@@ -15,5 +15,5 @@ a.hpr = HPR(time*2, sin(time), 0)
 #tetra(t1, t2, t3, t4)
 
 
-    
+
 start()

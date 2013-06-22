@@ -5,19 +5,19 @@ from Panda import *
 #Simply call the function with the name of the particle effect
 world.color = black
 
-# Run each of these and see what they do
-#intervalRings(position = P3(0,0,0))
-#likeFountainWater(position = P3(0,0,0))
-#shakenSparkles(position = P3(0,0,0), color=yellow, endColor=blue)
-#warpSpeed(position = P3(0,10,0))
-# heavySnow(position = P3(0,0,0))
-#lightSnow(position = P3(0,0,0))
-#explosions(position = P3(0,0,0))
-#fireWork(position = P3(0,0,0))
-#fireWorks(position = P3(0,0,0))
-#explosion(position = P3(-1,0,0) )
-#warpFace(position = P3(0,0,1), texture="smiley.jpg")
-fireish(position = P3(0,0,0))
+#Run each of these and see what they do
+intervalRings(position = p3(-1,0,0), size = .15)
+#likeFountainWater(position = p3(0,0,0), size = .25)
+shakenSparkles(position = p3(2,0,0), size = .25)
+warpSpeed(position = p3(-2,0,2), size = .015)
+heavySnow(position = p3(1,0,-1), size = .05)
+lightSnow(position = p3(1,0,1), size =.05)
+#explosions(position = p3(0,0,-2), size = .25)
+fireWork(position = p3(-1,0,-1), size = .25)
+fireWorks(position = p3(-2,0,0), size = .25)
+explosion(position = p3(-1,0,0), size = .25 )
+warpFace(position = p3(0,0,1), texture="face.jpg")
+fireish(position = p3(0,0,0), size = .25)
 
 
 

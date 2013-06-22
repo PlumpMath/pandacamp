@@ -1,7 +1,7 @@
 from Panda import *
 
 # game music
-#play("marioBrosTheme.mp3")
+play("marioBrosTheme.mp3")
 
 # create the vehicle
 car = jeep(size = 0.25)
@@ -26,14 +26,8 @@ setType(car.angle, numType)
 
 # driving state
 def driving(model, p0, hpr0):
-    # vehicle movement variable
-    # steering wheel angle
-#    a = getX(mouse)
 
-
-#    soundmove.play()
-
-#    play("engine.mp3")
+    play("engine.mp3")
     a1 = hold(0, key("rightArrow",  1) + keyUp("rightArrow",  0))
     a2 = hold(0, key("leftArrow",  -1) + keyUp("leftArrow",  0))
     a3 = hold(0, key("upArrow",  -1) + keyUp("upArrow",  0))
@@ -56,16 +50,16 @@ def driving(model, p0, hpr0):
     speed = integral(forward - friction)*10
     # heading
     h = getH(hpr0) + integral(speed * model.angle)
-    car.hpr = HPR(h,0,0)
-    car.velocity = P3C(speed,h+pi/2,0)
+    car.hpr = hpr(h,0,0)
+    car.velocity = p3c(speed,h+pi/2,0)
     car.position = p0 + integral(car.velocity)
-    car.when1(track.inWall(car), restartCar)
+    when1(car,track.inWall(car), restartCar)
 
 # drive reaction
 def restartCar(model, var):
     play("explosion2.wav")
-    driving(car, P3(4,4,0), HPR(pi/2, 0, 0))
+    driving(car, p3(4,4,0), hpr(pi/2, 0, 0))
 
-driving(car, P3(4,4,0), HPR(pi/2, 0, 0))
+driving(car, p3(4,4,0), hpr(pi/2, 0, 0))
 
 start()

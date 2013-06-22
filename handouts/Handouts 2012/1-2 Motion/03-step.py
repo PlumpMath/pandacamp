@@ -8,13 +8,13 @@ from Panda import *
 
 # This panda jumps at time 2
 
-panda(position = P3(step(time-2), 0, 0))
+panda(position = p3(step(time-2), 0, 0))
 
 # When you combine step with a velocity controller you get delayed motion.
 
 # Multiply the velocity below by a step to make the motion start later
-p0 = P3(0,0,0) # p0 is the intial position
-velocity = P3(0,0,0)
+p0 = p3(0,0,0) # p0 is the intial position
+velocity = p3(0,0,0)
 pos = p0 + integral(velocity)
 # Change the panda to use this position
 # You can use "smoothStep" instead of steo if you want to start slowly

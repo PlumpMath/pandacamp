@@ -17,8 +17,8 @@ grassScene()
 car = jeep()
 
 # set camera
-camera.position = P3(0,5,1)
-camera.hpr = HPR(pi,0,0)
+camera.position = p3(0,5,1)
+camera.hpr = hpr(pi,0,0)
 
 
 
@@ -36,7 +36,7 @@ setType(car.velocity,P3Type)
 car.velocity = P3C(speed,heading-pi/2,0)
 # Car position is the integral of the velocity
 car.position = integral(car.velocity)
-car.hpr = HPR(heading,0,0)
+car.hpr = hpr(heading,0,0)
 
 # run loop
 start()

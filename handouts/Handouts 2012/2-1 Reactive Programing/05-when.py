@@ -8,14 +8,14 @@ from Panda import *
 score = var(0)
 text(score)
 speed = var(1)
-    
-p = panda(position = P3(time, 0, 0))
+
+p = panda(position = p3(time, 0, 0))
 
 def startOver(m, v):
-    m.position = P3(speed*localTime, 0, 0)
+    m.position = p3(speed*localTime, 0, 0)
     score.add(1)
     speed.times(1.1)
-    
+
 p.when(getX(p.position) > 2, startOver)
 
 # Add another reaction to move the panda back right when the X coordinate becomes < -2.

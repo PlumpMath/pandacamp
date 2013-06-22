@@ -4,8 +4,8 @@ from Panda import *
 panda()
 # Create a panda at (0,0,0) and view it from different angles by setting
 # the camera in different places
-# Use camera.position = P3(x,y,z) to set your camera.
-# Use panda(position = P3(x,y,z)) to create a panda
+# Use camera.position = p3(x,y,z) to set your camera.
+# Use panda(position = p3(x,y,z)) to create a panda
 # If you don't assign a position to the panda it will be at position (0,0,0).
 # How can you tell how tall the panda is?
 
@@ -21,13 +21,13 @@ panda()
 # Where is the "grab point" on each model?
 # How big are these objects?  Which way do they face?
 
-# Experiment with the HPR of this panda.  Create a second panda at P3(1, 0, 0) with a different HPR.
-# Use HPR to create a HPR object.
+# Experiment with the hpr of this panda.  Create a second panda at P3(1, 0, 0) with a different hpr.
+# Use hpr to create a hpr object.
 
 # Move the camera using
 # sliders to adjust the location and heading of the camera
 
-# The sliderHPR and sliderP3 functions create sliders that return HPR / P3 information.
+# The sliderHPR and sliderP3 functions create sliders that return hpr / p3 information.
 # Use max = and min = on the sliderP3 to set the numbers in the -10 to 10 range
 # use label = "something" to give the sliders good names.
 

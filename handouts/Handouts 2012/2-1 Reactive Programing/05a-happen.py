@@ -5,8 +5,8 @@ from Panda import *
 
 # Make a velocity controller
 p = panda()
-v = hold(P3(0,0,0), key("left-arrow", P3(-2, 0, 0)) + key("right-arrow", P3(2, 0, 0)) +
-                    happen(getX(p.position) < -3, P3(0,0, 0))  + happen(getX(p.position) > 3, P3(0, 0, 0)))
+v = hold(p3(0,0,0), key("leftArrow", p3(-2, 0, 0)) + key("rightArrow", p3(2, 0, 0)) +
+                    happen(getX(p.position) < -3, p3(0,0, 0))  + happen(getX(p.position) > 3, p3(0, 0, 0)))
 
 
 p.position = integral(v)

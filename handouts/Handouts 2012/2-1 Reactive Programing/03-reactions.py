@@ -1,13 +1,13 @@
 from Panda import *
 
 
-# You attach a reaction to a model by giving the triggering event and the name of the reaction function.  
+# You attach a reaction to a model by giving the triggering event and the name of the reaction function.
 
 # exitScene is a built in reaction function
 
 # This tells the panda to exit the scene when the right mouse button is pressed (lbp).
 p = panda()
-p.react(rbp, exitScene)
+p.react(rbp(), exitScene)
 
 
 # This reaction function is used to respond to a mouse click by launching a soccer ball.
@@ -18,10 +18,10 @@ p.react(rbp, exitScene)
 
 def launch(model, value):
     pos = now(model.position)
-    soccerBall(position = pos + integral(P3(0,0,4)), size = .05)
-    
-p.react(lbp, launch)
-   
+    soccerBall(position = pos + integral(p3(0,0,4)), size = .05)
+
+p.react(lbp(), launch)
+
 # Activities
 #   Write a velocity controller that uses the arrow keys to move the panda left and right
 #   Make the panda face left or right depending on which way he's going

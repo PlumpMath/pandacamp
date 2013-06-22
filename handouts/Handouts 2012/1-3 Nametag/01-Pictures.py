@@ -8,7 +8,7 @@ from Panda import *
 # Make the picture a little bit bigger, and Set the HPR so that the photo spins.
 # Make a new picture in front and try to over lap them.
 
-rectangle(P3(0,0,0), P3(1,0,0), P3(0,0,1), texture = "realpanda.jpg")
+rectangle(p3(0,0,0), p3(1,0,0), p3(0,0,1), texture = "realpanda.jpg")
 
 # Use GIMP to create a photo with your picture / name in it and display it
 

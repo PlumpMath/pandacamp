@@ -10,14 +10,14 @@ from Panda import *
 #  randomInt(low, high) or randomInt(high)  - integers between low and high or 0 and high
 
 for i in range(10):
-    panda(position = P3(3*random11(), 0, 2*random11()))
+    panda(position = p3(3*random11(), 0, 2*random11()))
 
 # Activities:
 #   Add random headings - how do you get numbers between 0 and 2*pi?
 #   Make the number of pandas random
 #   Choose from a fixed set of colors
 #   Choose a completely random color
-#   Start all pandas at P3(0,0,0) and choose a random direction to explode them
-#     (generate a random HPR and then set the panda HPR and the velocity using HPRtoP3
+#   Start all pandas at p3(0,0,0) and choose a random direction to explode them
+#     (generate a random HPR and then set the panda hpr and the velocity using HPRtoP3
 start()
 
