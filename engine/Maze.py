@@ -300,4 +300,4 @@ def mazeStrategy(model, maze, strategy, vel, s0, pos, lastPos = (-1, -1)):
     vv = P3(newPos[0] - pos[0], newPos[1] - pos[1], 0)
     model.position = P3(pos[0]+.5, pos[1]+.5, 0) + integral(vv * vel)
     model.hpr = P3toHPR(vv)
-    model.react1(tag((s, newPos, pos), localTimeIs(deltaT)), chooseDir)
+    model.react1(tag((s, newPos, pos), wait(deltaT)), chooseDir)

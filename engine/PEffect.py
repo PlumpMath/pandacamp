@@ -9,7 +9,7 @@ import PEffect
 #
 import g
 from Handle import *
-from FRP import localTimeIs
+from FRP import wait
 from pandac.PandaModules import *
 from direct.particles.Particles import *
 from direct.particles.ParticleEffect import *
@@ -35,7 +35,7 @@ def startIt(m,v):
 
 def explosion(**a):
     e = explosions(**a)
-    e.react1(localTimeIs(2), stopIt)
+    e.react1(wait(2), stopIt)
     return e
 
 def explosions(color = yellow, endColor = red, size = 1,poolSize = 1000,
@@ -51,7 +51,7 @@ def explosions(color = yellow, endColor = red, size = 1,poolSize = 1000,
 
 def fireWork(**a):
     f = fireWorks(**a)
-    f.react1(localTimeIs(2), stopIt)
+    f.react1(wait(2), stopIt)
     return f
 
 def fireWorks(color = yellow, endColor = red, size = 1,poolSize = 4000,
@@ -275,7 +275,7 @@ class PEffect(Handle):
         #Had to use this hack because the refresh function kept restarting the particle effects.
         self.__dict__["started"] = True
         if duration != 0:
-            self.react1(localTimeIs(duration), lambda m, v: m.exit())
+            self.react1(wait(duration), lambda m, v: m.exit())
 
     def refresh(self):
         """
@@ -369,6 +369,6 @@ def blowUp(effect = explosions, time = 2, size = 1, offset = P3(0,0,0)):
     def r(model, value):
         pos = model.position.now()
         e = effect(position = pos + offset, size = size)
-        e.react1(localTimeIs(2), exitScene)
+        e.react1(wait(2), exitScene)
         model.exit()
     return r
