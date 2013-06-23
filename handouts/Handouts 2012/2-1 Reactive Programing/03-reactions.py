@@ -7,7 +7,7 @@ from Panda import *
 
 # This tells the panda to exit the scene when the right mouse button is pressed (lbp).
 p = panda()
-p.react(rbp(), exitScene)
+react(p, rbp(), exitScene)
 
 
 # This reaction function is used to respond to a mouse click by launching a soccer ball.
@@ -20,7 +20,7 @@ def launch(model, value):
     pos = now(model.position)
     soccerBall(position = pos + integral(p3(0,0,4)), size = .05)
 
-p.react(lbp(), launch)
+react(p, lbp(), launch)
 
 # Activities
 #   Write a velocity controller that uses the arrow keys to move the panda left and right
