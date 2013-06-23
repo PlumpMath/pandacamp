@@ -15,7 +15,7 @@ from Numerics import *
 from Types import *
 from Switchers import *
 from Handle import *
-from FRP import tag, hold, typedVar, timeIs, localTimeIs
+from FRP import tag, hold, typedVar, timeIs, wait
 from direct.showbase.DirectObject import DirectObject
 import sys,os
 from direct.interval.IntervalGlobal import *
@@ -209,7 +209,7 @@ allKeyNames = ["escape", "f1","f2","f3","f4","f5","f6","f7","f8","f9","f10","f11
 
 keyRenamings = {"upArrow": "arrow_up", "downArrow": "arrow_down",
                 "leftArrow": "arrow_left", "rightArrow": "arrow_right",
-                "pageUp": "page_up", "pageDown": "page_down"}
+                "pageUp": "page_up", "pageDown": "page_down", " ": "space"}
                 
 def checkValidKey(s):
     if s in keyRenamings:
@@ -236,8 +236,8 @@ def resetWorld():
 def atTime(n, r):
     react(timeIs(n), lambda m,v: r())
 
-def atLocalTime(n, r):
-    react(localTimeIs(n), lambda m, v: r())
+def wait(n, r):
+    react(wait(n), lambda m, v: r())
 
 world.gravity = P3(0, 0, -1)
 

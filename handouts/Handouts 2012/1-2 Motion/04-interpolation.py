@@ -8,7 +8,7 @@ from Panda import *
 # the itime function uses the current time to select a place along the path.
 
 p = panda()
-path = at(P3(0,0,0)) + to(1, P3(1, 0, 0)) + to(1, P3(-1, 0, 1))  # This path takes 3 seconds (why?)
+path = at(p3(0,0,0)) + to(1, p3(1, 0, 0)) + to(1, p3(-1, 0, 1))  # This path takes 3 seconds (why?)
 
 p.position = itime(path)
 

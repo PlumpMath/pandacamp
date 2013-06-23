@@ -4,7 +4,7 @@ from Panda import *
 
 # randomRange(1, 4) - This creates a random number between 1 and 4
 
-panda(position = P3(randomRange(-3, 3), 0, 0))
+panda(position = p3(randomRange(-3, 3), 0, 0))
 
 # Change this to make 10 pandas at random locations.
 # Then randomize the z coordinate.

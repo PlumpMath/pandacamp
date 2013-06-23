@@ -26,18 +26,12 @@ setType(car.angle, numType)
 
 # driving state
 def driving(model, p0, hpr0):
-    # vehicle movement variable
-    # steering wheel angle
-#    a = getX(mouse)
 
-
-#    soundmove.play()
-
-#    play("engine.mp3")
-    a1 = hold(0, key("arrow_right",  1) + keyUp("arrow_right",  0))
-    a2 = hold(0, key("arrow_left",  -1) + keyUp("arrow_left",  0))
-    a3 = hold(0, key("arrow_up",  -1) + keyUp("arrow_up",  0))
-    a4 = hold(0, key("arrow_down",  1) + keyUp("arrow_down",  0))
+    play("engine.mp3")
+    a1 = hold(0, key("rightArrow",  1) + keyUp("rightArrow",  0))
+    a2 = hold(0, key("leftArrow",  -1) + keyUp("leftArrow",  0))
+    a3 = hold(0, key("upArrow",  -1) + keyUp("upArrow",  0))
+    a4 = hold(0, key("downArrow",  1) + keyUp("downArrow",  0))
     delta = a1 + a2
     dspeed = a3 + a4
 
@@ -56,28 +50,28 @@ def driving(model, p0, hpr0):
     speed = integral(forward - friction)*10
     # heading
     h = getH(hpr0) + integral(speed * model.angle)
-    car.hpr = HPR(h,0,0)
-    car.velocity = P3C(speed,h+pi/2,0)
+    car.hpr = hpr(h,0,0)
+    car.velocity = p3c(speed,h+pi/2,0)
     car.position = p0 + integral(car.velocity)
-    car.when1(track.inWall(car), restartCar)
+    when1(car, track.inWall(car), restartCar)
     # car.when1(abs(car.angle*abs(car.velocity)*abs(car.velocity)) > 5, spinout)
 # drive reaction
 def restartCar(model, var):
     play("explosion2.wav")
-    driving(car, P3(4,4,0), HPR(pi/2, 0, 0))
+    driving(car, p3(4,4,0), hpr(pi/2, 0, 0))
 
 def spinout(model, var):
     p0 = now(model.position)
     hpr0 = now(model.hpr)
     v0 = now(model.velocity)
     model.position = p0 + integral(v0 * (1 - localTime / 3))
-    model.hpr = hpr0 + HPR(integral(20 * (1 - localTime / 3)),0,0)
+    model.hpr = hpr0 + hpr(integral(20 * (1 - localTime / 3)),0,0)
     play("bad.mp3")
     # drive away
-    model.react1(localTimeIs(3), restartCar)
+    react1(model,wait(3), restartCar)
 
 
-driving(car, P3(4,4,0), HPR(pi/2, 0, 0))
+driving(car, p3(4,4,0), hpr(pi/2, 0, 0))
 
 start()
 

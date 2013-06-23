@@ -7,8 +7,8 @@ from Panda import *
 # 2. start the panda at the center and move him to the camera.
 # 3. Finaly move the panda from the lower left corner to the upper right.
 
-p0 = P3(0,0,0) # p0 is the intial position
-velocity = P3(0,0,0)
+p0 = p3(0,0,0) # p0 is the intial position
+velocity = p3(0,0,0)
 pos = p0 + integral(velocity)
 
 # The Spin of an object is determind by the head, pitch, and roll or hpr.
@@ -19,8 +19,8 @@ pos = p0 + integral(velocity)
 # traveling.
 # Next: get the panda to flip, spin around, and a combo of both spining and flipping.
 
-s0 = HPR(0,0,0)
-svelocity = HPR(0,0,0)
+s0 = hpr(0,0,0)
+svelocity = hpr(0,0,0)
 spin = s0 + integral(svelocity)
 
 panda(position = pos, hpr = spin)

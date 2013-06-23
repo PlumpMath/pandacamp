@@ -26,7 +26,7 @@ def itimef(i):
 def lastFor(time,model):
     def end(m,v):
         m.exit()
-    model.react1(localTimeIs(time), end)
+    model.react1(wait(time), end)
     
 def pointForward(m):
     m.hpr = P3toHPR(deriv(m.position))

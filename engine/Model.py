@@ -14,7 +14,7 @@ from Types import *
 from Switchers import *
 from Handle import *
 from FileUtils import *
-from FRP import localTimeIs
+from FRP import wait
 from Collection import getCollection
 
 # This fills in all of the defaults
@@ -48,7 +48,7 @@ pandaParameters = { "localSize" : 0.00178,
                     "localOrientation" : HPR(0, 0, 0)}
 
 def model(fileName, name = None, size = None, hpr = None, position = None, color = None,
-                 control = None, texture = None, duration = 0, kind = None):
+                 control = None, texture = None, duration = 0, joints = [], animations = None, defaultAnimation = None, frame = None, kind = None):
    res = Model(fileName, name, size, hpr, position, color,
                 control, texture, duration, kind)
    return res
@@ -112,7 +112,13 @@ class Model(Handle):
                     undefinedSignal(self, 'frame') # ????  Bad error message ...
             else:
                 self.d.model = Actor.Actor(self.d.fileName)
-            for j,pj in joints:
+            for x in joints:
+                if isinstance(x, basestring):
+                    j = x
+                    pj = x
+                else:
+                    j, pj = x
+                print "joint "+str(j)+" "+ str(pj)
                 self.d.jointNodes[j] = self.d.model.controlJoint(None, "modelRoot", pj)
                 if self.d.jointNodes[j] == None:
                     print 'joint not found: ' + j

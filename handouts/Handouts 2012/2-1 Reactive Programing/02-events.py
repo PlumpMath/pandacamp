@@ -25,8 +25,8 @@ grassScene()
 # For example, this sets the size of the panda using the arrow keys, the position using the mouse buttons, and changes the color at
 # the given times.
 
-p.size = hold(1, key('arrow_up', .5) + key('arrow_down', 1.5))
-p.position = hold(P3(0,0,0), tag(P3(0,0,1), lbp) + tag(P3(0,0,-1), rbp))
+p.size = hold(1, key('upArrow', .5) + key('downArrow', 1.5))
+p.position = hold(p3(0,0,0), lbp(p3(0,0,1)) +  rbp(p3(0,0,-1)))
 p.color = hold(red, timeIs(2, green) + timeIs(4, white))
 
 # Write a panda controller that moves the panda to a 4 different locations using 4 different events

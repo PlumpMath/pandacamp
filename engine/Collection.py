@@ -16,7 +16,6 @@ class Collection:
         self.members = [model] + self.members
         model.d.collections = [self] + model.d.collections
     def remove(self, model):
-        print "Removing " + repr(model)
         newMembers = []
         for m in self.members:
             if not (m is model):

@@ -9,6 +9,7 @@ import g
 import math
 import random
 from Types import *
+from panda3d.core import Quat, VBase3
 
 # This is a where we park signal functions.
 
@@ -260,6 +261,7 @@ class SHPR:
           return SHPR(staticLerpA(t, self.h, p2.h),
                       staticLerpA(t, self.p, p2.p),
                       staticLerpA(t, self.r, p2.r))
+
 def addHPR(a,b):
     return SHPR(a.h+b.h, a.p+b.p, a.r+b.r)
 
@@ -269,14 +271,20 @@ def subHPR(a,b):
 def scaleHPR(s,a):
     return SHPR(a.h*s, a.p*s, a.r*s)
 
+def getUpHPR(hpr):
+    q = Quat()
+    q.setHpr(VBase3(math.degrees(hpr.h), math.degrees(hpr.p), math.degrees(hpr.r)))
+    v = q.getUp()
+    return SP3(v.x, v.y, v.z)
+
 HPRType.encode = lambda p:str(p.h)+","+str(p.p)+","+str(p.r)
 def readHPR(str):
     nums = parseNumbers(str)
     return SHPR(nums[0],nums[1], nums[2])
+
 HPRType.decode = readHPR
 
 P2Type.zero = SP2(0,0)
-
 P3Type.zero = SP3(0,0,0)
 HPRType.zero = SHPR(0,0,0)
 P2Type.zero = SP2(0,0)

@@ -3,7 +3,7 @@ from Panda import *
 # A for loop allows you to do something more than once.  For example, this puts a row of pandas on the screen:
 
 for x in range(5):
-    panda(position = P3(x-2, 0, 0))
+    panda(position = p3(x-2, 0, 0))
 
 # Note that each panda sees a different x value.  The range(5) means all numbers between 0 and 4 (there are 5 of them)
 

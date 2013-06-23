@@ -5,11 +5,11 @@ from Panda import *
 # This function creates a rotating panda at a given point, named p:
 
 def f(p):
-    panda(position = p, hpr = HPR(time, 0, 0))
+    panda(position = p, hpr = hpr(time, 0, 0))
 
 # Now use f to create a rotating panda:
 
-f(P3(1,0,0))
+f(p3(1,0,0))
 
 # Things to do:
 #   Add another call to f that creates a second rotating panda

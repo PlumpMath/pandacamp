@@ -23,11 +23,10 @@ b = sphere(size=.4, texture="sun1.jpg")
 v = hold(p3(0,0,0), key("leftArrow", p3(-1, 0, 0)) + key("rightArrow", p3(1, 0, 0)) +
                     happen(getX(b.position) < -3, p3(1,0, 0))  + happen(getX(b.position) > 3, p3(-1, 0, 0)))
 b.position = p3(0,0,-2) + integral(v)
-b.hpr= hold(hpr(3.14,0,0), key('leftArrow', hpr(3.5,0,0))+key('rightArrow', hpr(-3.5,0,-0)))
+b.hpr= integral(hold(hpr(1,0,0), key('leftArrow', hpr(1,0,0))+key('rightArrow', hpr(-1,0,0))))
 
 
 def shootBall(m, v):
-    print "Shoot!"
     pos=now(b.position)
     soccerBall(size = .1, position = pos+p3(0,0,.5) + integral(p3(0,0,3)), duration = .5,color=red, kind = "missile")
     score.add(-1)
@@ -41,8 +40,8 @@ def blowUp(m, v):
             text(score, size=4.5,position= p2(0,-.3),color=green)
             rectangle(p3(-4,1,-3),p3(4,1,-3), p3(-4,1,3), texture="space8.jpg")
         else:
-            targetExample.texture = textures[now(targetPlanet)]
-            targetExample.size=sizes[now(targetPlanet)]
+            targetExample.texture = textures[now(targetPlanet+1)]
+            targetExample.size=sizes[now(targetPlanet+1)]
             exit(m)
     else:
         exit(m)
@@ -56,12 +55,12 @@ def destruct(m, ball):
         exit(m)
         exit(ball)
         score.add(5)
-        shakenSparkles(position=now(m.position), duration=.5,size=1)
+        fireish(position=now(ball.position), duration=.5,size=.1)
 
 
 def randomPlanet(m, v):
-    i = randomInt(nt)  # Pick a planet
-    p = sphere(position = p3(random11()*3, 0, 2-localTime), duration = 4.1,texture=textures[i],size=sizes[i],
+    i = randomInt(nt-1)  # Pick a planet
+    p = sphere(position = p3(random11()*3, 0, 2-localTime*randomRange(1,2.5)), duration = 4.1,texture=textures[i],size=sizes[i],
                 hpr=integral(hpr(randomRange(1,5),0,0)))
     p.planet=i
     react(p, hit(b,p), blowUp)

@@ -31,6 +31,8 @@ getH      = lift(lambda v:v.h, "getH", [HPRType], numType)
 getP      = lift(lambda v:v.p, "getP", [HPRType], numType)
 getR      = lift(lambda v:v.r, "getR", [HPRType], numType)
 
+getUp     = lift(lambda hpr:getUpHPR(hpr), "getUp", [HPRType], P3Type)
+
 radians   = lift(math.radians, "radians", numType1, numType)
 degrees   = lift(math.degrees, "degrees", numType1, numType)
 sin       = lift(math.sin, "sin", numType1, numType)
@@ -73,7 +75,7 @@ reverse = lift(reverseS, "reverse", infer = "interpolate")
 forever = lift(lambda i: repeatS(-1, i), "forever", infer = "interpolate")
 
 P3toHPR = lift(sP3toHPR, "P3toHPR", [P3Type], HPRType)
-p3toHpr = P3toHPR
+p3ToHpr = P3toHPR
 
 HPRtoP3 = lift(sHPRtoP3, "HPRtoP3", [HPRType], P3Type)
 hprToP3 = HPRtoP3

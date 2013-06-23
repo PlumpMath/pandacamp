@@ -14,7 +14,7 @@ a1 = alien(position = s1.position + P3(0,0,.8), size = .6)
 
 tardis(position = P3(40,50,4), hpr = HPR(time, 0, 0), size = 3)
 s2 = space5(position = P3(-40, 50, -3))
-dropOff(position = s2.position + P3(0,0,.5))
+#dropOff(position = s2.position + P3(0,0,.5))
 spaceship(position= P3(0,20,.5),hpr=HPR(time,0,0))
 s = spaceship()
 hprs = HPR(pi/2, 0, 0)
@@ -34,15 +34,15 @@ s.react(hit(s,s1), blowUp)
 
 #a.position = P3(0,0,abs(sin(5)))
 
-for i in range(100): 
+for i in range(100):
     space4(size = randomRange(2,.5), position = P3(randomRange(100,-100), randomRange(100,-100), randomRange(100,-100)), hpr = HPR(randomRange(time,-time), randomRange(time,-time), randomRange(time,-time)))
     space5(size = randomRange(2,.5), position = P3(randomRange(100,-100), randomRange(100,-100), randomRange(100,-100)), hpr = HPR(randomRange(time,-time), randomRange(time,-time), randomRange(time,-time)))
 
-for i in range(100): 
+for i in range(100):
     space4(size = randomRange(2,.5), position = P3(randomRange(-70,-20), randomRange(20,-20), randomRange(-10,10)), hpr = HPR(randomRange(time,-time), randomRange(time,-time), randomRange(time,-time)))
     space5(size = randomRange(2,.5), position = P3(randomRange(-70,-20), randomRange(20,-20), randomRange(-10,10)), hpr = HPR(randomRange(time,-time), randomRange(time,-time), randomRange(time,-time)))
-    
-for i in range(10):    
+
+for i in range(10):
     alien(size = randomRange(.5,1), position = P3(randomRange(-70,-20), randomRange(20,-20), randomRange(10,-10)), hpr = HPR(randomRange(time,-time), randomRange(time,-time), randomRange(time,-time)))
 
 

@@ -8,7 +8,7 @@ from Panda import *
 # color based on the corodinates on the screen in the x and z directions being
 # either both positive or both negative.
 
-p = panda()
+p = ralph()
 mouseControl(p)
 
 x = getX(p.position)

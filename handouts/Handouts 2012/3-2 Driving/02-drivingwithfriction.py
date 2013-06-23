@@ -21,8 +21,8 @@ grassScene()
 car = jeep()
 
 # set camera
-camera.position = P3(0,5,1)
-camera.hpr = HPR(pi+integral(hold(0, key("left-arrow", .3) + key("right-arrow", -.3) + key(" ", 0))),0,0)  #  Lets you turn your head
+camera.position = p3(0,5,1)
+camera.hpr = hpr(pi+integral(hold(0, key("leftArrow", .3) + key("rightArrow", -.3) + key(" ", 0))),0,0)  #  Lets you turn your head
 
 
 
@@ -41,11 +41,11 @@ text(format("Speed: %f", speed))
 heading = integral(speed*angle)
 # velocity vector has the magnitude of the speed and direction of the heading.  The pi/2 is because
 # the jeep model faces -y.
-car.velocity = P3C(speed,heading-pi/2,0)
+car.velocity = p3c(speed,heading-pi/2,0)
 # Car position is the integral of the velocity
 car.position = integral(car.velocity)
 
-car.hpr = HPR(heading,0,0)
+car.hpr = hpr(heading,0,0)
 
 # run loop
 start()

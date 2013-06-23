@@ -3,7 +3,7 @@ from Panda import *
 # A function which takes a parameter t and returns a position defines a path.
 # This path goes up and down.
 def path(t):
-    return P3(t-2, 0, sin(t*2))
+    return p3(t-2, 0, sin(t*2))
 
 # Place a bunch of pandas on this path:
 for x in range(5):
