@@ -14,7 +14,6 @@ from Types import *
 from Switchers import *
 from Handle import *
 from FileUtils import *
-from FRP import wait
 from Collection import getCollection
 
 # This fills in all of the defaults
@@ -50,12 +49,12 @@ pandaParameters = { "localSize" : 0.00178,
 def model(fileName, name = None, size = None, hpr = None, position = None, color = None,
                  control = None, texture = None, duration = 0, joints = [], animations = None, defaultAnimation = None, frame = None, kind = None):
    res = Model(fileName, name, size, hpr, position, color,
-                control, texture, duration, kind)
+                control, texture, duration, kind, joints, animations, defaultAnimation, frame)
    return res
 
 class Model(Handle):
     def __init__(self, fileName, name, size, hpr, position, color,
-                 control, texture, duration, kind):
+                 control, texture, duration, kind, joints,  animations, defaultAnimation, frame):
         if name is None:
             name = fileName  #  Should parse off the directories
         Handle.__init__(self, name = name, duration = duration)
@@ -78,7 +77,6 @@ class Model(Handle):
         localPosition = mParams["localPosition"]
         localSize = mParams["localSize"]
         localOrientation = mParams["localOrientation"]
-        joints = mParams["joints"] # Needs conversion to array of pairs  # Should remove this from the .model
         animations = mParams["animations"]  # Should remove this from the .model
         defaultAnimation = mParams["defaultAnimation"]  # Should remove this from the .model
         frame = mParams["frame"]   # Should remove this from the .model
@@ -89,7 +87,15 @@ class Model(Handle):
 
         self.d.fileName = mFile
         self.d.hasJoints = len(joints) != 0
-        self.d.joints = joints
+        expandedJoints = []
+        for x in joints:
+            if isinstance(x, basestring):
+                    j = x
+                    pj = x
+            else:
+                    j, pj = x
+            expandedJoints.add((j, pj))
+        self.d.joints = expandedJoints
         self.d.jointNodes = {}
         self.cRadius = static(cRadius)
         self.cFloor = static(cFloor)
@@ -112,12 +118,7 @@ class Model(Handle):
                     undefinedSignal(self, 'frame') # ????  Bad error message ...
             else:
                 self.d.model = Actor.Actor(self.d.fileName)
-            for x in joints:
-                if isinstance(x, basestring):
-                    j = x
-                    pj = x
-                else:
-                    j, pj = x
+         
                 print "joint "+str(j)+" "+ str(pj)
                 self.d.jointNodes[j] = self.d.model.controlJoint(None, "modelRoot", pj)
                 if self.d.jointNodes[j] == None:
