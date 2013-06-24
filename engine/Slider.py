@@ -69,6 +69,8 @@ def sliderHPR(init = None, label = ""):
     r = slider(max = 2*pi, label = label + "-r")
     return HPR(h, p, r)
 
+sliderHpr = sliderHPR
+
 # The init can be either a scalar or a P3.  The same should be done for min and max but I'm lazy.
 def sliderP3(min = 0, max = 1, init = 0, label = "P3"):
     if (getPType(init) == P3Type):
