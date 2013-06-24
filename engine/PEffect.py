@@ -237,8 +237,8 @@ def explosionsFn(self, dict):
     p0.renderer.setUserAlpha(1.00)
     # Point parameters
     p0.renderer.setPointSize(1.00)
-    p0.renderer.setStartColor(Vec4(1.00, 1.00, 0.30, 1.00))#Yellow
-    p0.renderer.setEndColor(Vec4(0.50, 0.00, 0.00, 1.00))#dark red
+    p0.renderer.setStartColor(dict["headColor"].toVBase4())#Yellow
+    p0.renderer.setEndColor(dict["tailColor"].toVBase4())#dark red
     p0.renderer.setBlendType(PointParticleRenderer.PPBLENDLIFE)
     p0.renderer.setBlendMethod(BaseParticleRenderer.PPBLENDLINEAR)
     # Emitter parameters
@@ -249,11 +249,14 @@ def explosionsFn(self, dict):
     p0.emitter.setExplicitLaunchVector(Vec3(1.0000, 0.0000, 9.0000))
     p0.emitter.setRadiateOrigin(Point3(0.0000, 0.0000, 0.0000))
     # Sphere Volume parameters
-    p0.emitter.setRadius(0.025000)
+    p0.emitter.setRadius(dict["radius"])
     self.addParticles(p0)
 
-def explosions(texture = "explosion.png", **a):
+def explosions(texture = "explosion.png",headColor = red, tailColor = orange, radius = 0.025, **a):
     a["texture"] = texture
+    a["headColor"] = headColor
+    a["tailColor"] = tailColor
+    a["radius"] = radius
     PEffect(explosionsFn, name = "explosions", **a)
 
 def fireWorkFn(self, dict):
@@ -268,27 +271,27 @@ def fireWorkFn(self, dict):
     p0.setRenderer("PointParticleRenderer")
     p0.setEmitter("SphereVolumeEmitter")
     p0.setPoolSize(10000)
-    p0.setBirthRate(1.5)
+    p0.setBirthRate(dict["birthRate"])
     p0.setLitterSize(5000)
     p0.setLitterSpread(10)
     p0.setSystemLifespan(1.0000)
     p0.setLocalVelocityFlag(1)
     p0.setSystemGrowsOlderFlag(0)
     # Factory parameters
-    p0.factory.setLifespanBase(0.5000)
-    p0.factory.setLifespanSpread(0.2000)
-    p0.factory.setMassBase(1.0000)
-    p0.factory.setMassSpread(0.0000)
-    p0.factory.setTerminalVelocityBase(30.0000)
-    p0.factory.setTerminalVelocitySpread(0.0000)
+    p0.factory.setLifespanBase(dict["lifeSpan"])
+    p0.factory.setLifespanSpread(dict["lifeSpanSpread"])
+    p0.factory.setMassBase(dict["mass"])
+    p0.factory.setMassSpread(dict["massSpread"])
+    p0.factory.setTerminalVelocityBase(dict["terminalVelocity"])
+    p0.factory.setTerminalVelocitySpread(dict["terminalVelocitySpread"])
     # Point factory parameters
     # Renderer parameters
     p0.renderer.setAlphaMode(BaseParticleRenderer.PRALPHANONE)
     p0.renderer.setUserAlpha(1.00)
     # Point parameters
-    p0.renderer.setPointSize(1.00)
-    p0.renderer.setStartColor(Vec4(1.00, 1.00, 0.30, 1.00))#Yellow
-    p0.renderer.setEndColor(Vec4(0.50, 0.00, 0.00, 1.00))#dark red
+    p0.renderer.setPointSize(dict["pointSize"])
+    p0.renderer.setStartColor(dict["headColor"].toVBase4())#Yellow
+    p0.renderer.setEndColor(dict["tailColor"].toVBase4())#dark red
     p0.renderer.setBlendType(PointParticleRenderer.PPBLENDLIFE)
     p0.renderer.setBlendMethod(BaseParticleRenderer.PPBLENDLINEAR)
     # Emitter parameters
@@ -299,18 +302,31 @@ def fireWorkFn(self, dict):
     p0.emitter.setExplicitLaunchVector(Vec3(1.0000, 0.0000, 0.0000))
     p0.emitter.setRadiateOrigin(Point3(0.0000, 0.0000, 0.0000))
     # Sphere Volume parameters
-    p0.emitter.setRadius(0.25000)
+    p0.emitter.setRadius(dict["radius"])
     self.addParticles(p0)
     f0 = ForceGroup.ForceGroup('Sink')
     # Force parameters
-    force0 = LinearVectorForce(Vec3(0.0000, 0.0000, -2.0000), 1.0000, 0)
+    force0 = LinearVectorForce(Vec3(getX(dict["force"]), getY(dict["force"]), getZ(dict["force"])), 1.0000, 0)
     force0.setActive(1)
     f0.addForce(force0)
     self.addForceGroup(f0)
 
-def fireWorks(texture = None, **a):
-    a["texture"] = texture
-    PEffect(fireWorkFn, name = "fireWork", **a)
+def fireWorks(headColor = yellow, tailColor = red, radius = .25, force = p3(0,0,-2), pointSize = 1,
+    lifeSpan = .5, lifeSpanSpread = .2, mass =1, massSpread = 0, terminalVelocity = 30,
+    terminalVelocitySpread = .2, birthRate = 1.5**a):
+        a["lifeSpan"] = lifeSpan
+        a["lifeSpanSpread"] = lifeSpanSpread
+        a["mass"] = mass
+        a["massSpread"] = massSpread
+        a["terminalVelocity"] = terminalVelocity
+        a["terminalVelocitySpread"] = terminalVelocitySpread
+        a["headColor"] = headColor
+        a["tailColor"] = tailColor
+        a["force"] = force
+        a["pointSize"] = pointSize
+        a["radius"] = radius
+        a["birthRate"] = birthRate
+        PEffect(fireWorkFn, name = "fireWork", **a)
 
 def fireWork(duration = 2,  **a):
    fireWorks(duration = duration, **a)
@@ -346,8 +362,8 @@ def intervalRingsFn(self, dict):
     p0.renderer.setUserAlpha(1.00)
     # Point parameters
     p0.renderer.setPointSize(1.00)
-    p0.renderer.setStartColor(Vec4(1.00, 0.00, 1.00, 1.00))
-    p0.renderer.setEndColor(Vec4(1.00, 1.00, 0.00, 1.00))
+    p0.renderer.setStartColor(dict["headColor"])
+    p0.renderer.setEndColor(dict["tailColor"])
     p0.renderer.setBlendType(PointParticleRenderer.PPBLENDLIFE)
     p0.renderer.setBlendMethod(BaseParticleRenderer.PPBLENDLINEAR)
     # Emitter parameters
@@ -367,8 +383,10 @@ def intervalRingsFn(self, dict):
     self.addForceGroup(f0)
 
 
-def intervalRings(texture = None, **a):
+def intervalRings(texture = None, headColor = blue, tailColor = white, **a):
     a["texture"] = texture
+    a["headColor"] = headColor
+    a["tailColor"] = tailColor
     PEffect(intervalRingsFn, name = "intervalRings", **a)
 
 def likeFountainWaterFn(self,dict):
@@ -422,8 +440,7 @@ def likeFountainWaterFn(self,dict):
     f0.addForce(force0)
     self.addForceGroup(f0)
 
-def likeFountainWater(texture = None, **a):
-    a["texture"] = texture
+def likeFountainWater( **a):
     PEffect(likeFountainWaterFn, name = "likeFountainWater", **a)
 
 
