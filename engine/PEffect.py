@@ -624,7 +624,6 @@ def warpSpeed(headColor = white, tailColor = blue,lifeSpan = 1, lifeSpanSpread =
 
 def fireishFn(self, dict):
 
-
     self.reset()
     self.setPos(0.000, 0.000, 0.000)
     self.setHpr(0.000, 0.000, 0.000)
