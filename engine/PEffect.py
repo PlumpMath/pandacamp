@@ -313,7 +313,7 @@ def fireWorkFn(self, dict):
 
 def fireWorks(headColor = yellow, tailColor = red, radius = .25, force = p3(0,0,-2), pointSize = 1,
     lifeSpan = .5, lifeSpanSpread = .2, mass =1, massSpread = 0, terminalVelocity = 30,
-    terminalVelocitySpread = .2, birthRate = 1.5**a):
+    terminalVelocitySpread = .2, birthRate = 1.5, **a):
         a["lifeSpan"] = lifeSpan
         a["lifeSpanSpread"] = lifeSpanSpread
         a["mass"] = mass
