@@ -241,10 +241,8 @@ def wait(n, r):
 
 world.gravity = P3(0, 0, -1)
 
-
-# This is the air resistance used by launch
-
-world.airRes = 0
+def reparent(m1, m2):
+    m1.reparentTo(m2)
 
 g.world = world
 

@@ -9,12 +9,12 @@ import PEffect
 #
 import g
 from Handle import *
-from FRP import localTimeIs
+
 from FileUtils import *
 from pandac.PandaModules import *
 from direct.particles.Particles import *
 from direct.particles.ParticleEffect import *
-from World import react1
+
 #import direct.directbase.DirectStart
 #from direct.directbase.TestStart import *
 
@@ -55,7 +55,7 @@ class PEffect(Handle):
             name = 'PEffect-%d' % PEffect.pid
             PEffect.pid += 1
 
-        Handle.__init__(self, name = name)
+        Handle.__init__(self, name = name, duration = duration)
 
         #pathname = "/lib/panda/lib/lib-original/particles/"
         base.enableParticles()
@@ -81,9 +81,6 @@ class PEffect(Handle):
 
         p.reparentTo(render)
         p.start()
-        #Had to use this hack because the refresh function kept restarting the particle effects.
-        if duration != 0:
-            self.react1(localTimeIs(duration), lambda m, v: m.exit())
 
     def refresh(self):
 
@@ -106,9 +103,7 @@ class PEffect(Handle):
 #        p.particlesDict["particles-1"].emitter.setRadiateOrgin(Point3(x,y,z))
     def exit(self):
         self.__dict__["started"]= False
-        name = self.particleName.now()
-        p = self.__dict__[name]
-        p.disable()
+        self.d.model.disable()
     def stop(self):
         """
         stop(self):
@@ -116,9 +111,7 @@ class PEffect(Handle):
             the effect on the particles left on screen.
         """
         self.__dict__["started"]= False
-        name = self.particleName.now()
-        p = self.__dict__[name]
-        p.softStop()
+        self.d.model.softStop()
 
     def start(self):
         """
@@ -126,13 +119,10 @@ class PEffect(Handle):
             starts the Particle effect.
         """
         self.__dict__["started"] = True
-        name = self.pid
-        p = self.__dict__[self.particleName.now()]
-        p.softStart()
+        self.d.model.softStart()
 
     def reparentTo(self, handle):
-        name = self.name
-        p = self.__dict__[name]
+        p = self.d.model
         p.reparentTo(handle.d.model)
 
 # Reaction Functions
@@ -204,7 +194,7 @@ def fireFn(self, dict):
 
 def fire1(texture = "fire.png", **a):
     a["texture"] = texture
-    PEffect(fireFn, name = "fire", **a)
+    return PEffect(fireFn, name = "fire", **a)
 
 
 def explosionsFn(self, dict):
@@ -257,7 +247,7 @@ def explosions(texture = "explosion.png",headColor = red, tailColor = orange, ra
     a["headColor"] = headColor
     a["tailColor"] = tailColor
     a["radius"] = radius
-    PEffect(explosionsFn, name = "explosions", **a)
+    return PEffect(explosionsFn, name = "explosions", **a)
 
 def fireWorkFn(self, dict):
     self.reset()
@@ -326,10 +316,10 @@ def fireWorks(headColor = yellow, tailColor = red, radius = .25, force = p3(0,0,
         a["pointSize"] = pointSize
         a["radius"] = radius
         a["birthRate"] = birthRate
-        PEffect(fireWorkFn, name = "fireWork", **a)
+        return PEffect(fireWorkFn, name = "fireWork", **a)
 
 def fireWork(duration = 2,  **a):
-   fireWorks(duration = duration, **a)
+   return fireWorks(duration = duration, **a)
 
 def intervalRingsFn(self, dict):
 
@@ -387,7 +377,7 @@ def intervalRings(texture = None, headColor = blue, tailColor = white, **a):
     a["texture"] = texture
     a["headColor"] = headColor
     a["tailColor"] = tailColor
-    PEffect(intervalRingsFn, name = "intervalRings", **a)
+    return PEffect(intervalRingsFn, name = "intervalRings", **a)
 
 def likeFountainWaterFn(self,dict):
 
@@ -441,7 +431,7 @@ def likeFountainWaterFn(self,dict):
     self.addForceGroup(f0)
 
 def likeFountainWater( **a):
-    PEffect(likeFountainWaterFn, name = "likeFountainWater", **a)
+    return PEffect(likeFountainWaterFn, name = "likeFountainWater", **a)
 
 
 def rainFn(self, dict):
@@ -501,7 +491,7 @@ def rain(headColor = blue, tailColor = blue,lineScaler = 3, force = p3(0,0,-30),
     a["tailColor"] = tailColor
     a["lineScaler"] = lineScaler
     a["force"] = force
-    PEffect(rainFn, name = "rain", **a)
+    return PEffect(rainFn, name = "rain", **a)
 
 def shakenSparklesFn(self, dict ):
 
@@ -568,7 +558,7 @@ def shakenSparkles(headColor = white, tailColor = white ,lifeSpan = 0.05, lifeSp
     a["terminalVelocity"] = terminalVelocity
     a["terminalVelocitySpread"] = terminalVelocitySpread
     a["birthRate"] = birthRate
-    PEffect(shakenSparklesFn, name = "shakenSparkles", **a)
+    return PEffect(shakenSparklesFn, name = "shakenSparkles", **a)
 
 def warpSpeedFn(self, dict):
 
@@ -637,7 +627,7 @@ def warpSpeed(headColor = white, tailColor = blue,lifeSpan = 1, lifeSpanSpread =
     a["terminalVelocitySpread"] = terminalVelocitySpread
     a["lineScaler"] = lineScaler
     a["birthRate"] = birthRate
-    PEffect(warpSpeedFn, name = "warpSpeed", **a)
+    return PEffect(warpSpeedFn, name = "warpSpeed", **a)
 
 def fireishFn(self, dict):
 
@@ -704,7 +694,7 @@ def fireish(texture = "fire.png",lifeSpan = 1, lifeSpanSpread = 2, mass = 10,
         a["terminalVelocity"] = terminalVelocity
         a["terminalVelocitySpread"] = terminalVelocitySpread
         a["birthRate"] = birthRate
-        PEffect(fireishFn, name = "fireish", **a)
+        return PEffect(fireishFn, name = "fireish", **a)
 
 
 def warpFaceFn(self, dict):
@@ -773,7 +763,7 @@ def warpFace (texture = "face.png",lifeSpan = 2, lifeSpanSpread = 1, mass = 10,
          a["terminalVelocity"] = terminalVelocity
          a["terminalVelocitySpread"] = terminalVelocitySpread
          a["birthRate"] = birthRate
-         PEffect(warpFaceFn, name = "warpFace", **a)
+         return PEffect(warpFaceFn, name = "warpFace", **a)
 
 
 def heavySnowFn(self, dict):
@@ -845,7 +835,7 @@ def heavySnow (lifeSpan = 6, lifeSpanSpread = 0, mass = 1,
          a["headColor"] = headColor
          a["tailColor"] = tailColor
          a["force"] = force
-         PEffect(heavySnowFn, name = "heavySnow", **a)
+         return PEffect(heavySnowFn, name = "heavySnow", **a)
 
 def lightSnowFn(self, dict):
 
@@ -914,7 +904,7 @@ def lightSnow (lifeSpan = 6, lifeSpanSpread = 0, mass = 1,
          a["headColor"] = headColor
          a["tailColor"] = tailColor
          a["force"] = force
-         PEffect(lightSnowFn, name = "lightSnow", **a)
+         return PEffect(lightSnowFn, name = "lightSnow", **a)
 
 def smokeTailFn(self, dict):
 
@@ -981,4 +971,4 @@ def smokeTail(lifeSpan = 5, lifeSpanSpread = 0, mass = 0.005,
          a["terminalVelocitySpread"] = terminalVelocitySpread
          a["birthRate"] = birthRate
          a["force"] = force
-         PEffect(smokeTailFn, name = "smokeTail", **a)
+         return PEffect(smokeTailFn, name = "smokeTail", **a)

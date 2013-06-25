@@ -358,9 +358,7 @@ def now(x):
 def timeIs(t, val = True):
     return tag(val, Clock(t,None,t,False))
 
-def alarm(start = 0, end = None, step = None):
-    if end is None:
-        return Clock(0, start, None, True)
+def alarm(step = None, start = 0, end = None):
     return Clock(start, step, end, True)
 
 def localTimeIs(t, val = True):
