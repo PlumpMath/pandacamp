@@ -362,8 +362,8 @@ def intervalRingsFn(self, dict):
     p0.renderer.setUserAlpha(1.00)
     # Point parameters
     p0.renderer.setPointSize(1.00)
-    p0.renderer.setStartColor(dict["headColor"])
-    p0.renderer.setEndColor(dict["tailColor"])
+    p0.renderer.setStartColor(dict["headColor"].toVBase4())
+    p0.renderer.setEndColor(dict["tailColor"].toVBase4())
     p0.renderer.setBlendType(PointParticleRenderer.PPBLENDLIFE)
     p0.renderer.setBlendMethod(BaseParticleRenderer.PPBLENDLINEAR)
     # Emitter parameters
