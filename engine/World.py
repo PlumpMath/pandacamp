@@ -15,7 +15,7 @@ from Numerics import *
 from Types import *
 from Switchers import *
 from Handle import *
-from FRP import tag, hold, typedVar, timeIs, wait
+from FRP import tag, hold, typedVar, timeIs, localTimeIs
 from direct.showbase.DirectObject import DirectObject
 import sys,os
 from direct.interval.IntervalGlobal import *
@@ -237,7 +237,7 @@ def atTime(n, r):
     react(timeIs(n), lambda m,v: r())
 
 def wait(n, r):
-    react(wait(n), lambda m, v: r())
+    react(localTimeIs(n), lambda m, v: r())
 
 world.gravity = P3(0, 0, -1)
 

@@ -9,7 +9,7 @@ import PEffect
 #
 import g
 from Handle import *
-from FRP import wait
+from FRP import localTimeIs
 from FileUtils import *
 from pandac.PandaModules import *
 from direct.particles.Particles import *
@@ -199,7 +199,7 @@ class PEffect(Handle):
         p.start()
         #Had to use this hack because the refresh function kept restarting the particle effects.
         if duration != 0:
-            self.react1(wait(duration), lambda m, v: m.exit())
+            self.react1(localTimeIs(duration), lambda m, v: m.exit())
 
     def refresh(self):
 

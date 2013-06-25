@@ -363,7 +363,7 @@ def alarm(start = 0, end = None, step = None):
         return Clock(0, start, None, True)
     return Clock(start, step, end, True)
 
-def wait(t, val = True):
+def localTimeIs(t, val = True):
     return tag(val, Clock(t,None,t, True))
 
 def localAlarm(start = 0, end = None, step = None):

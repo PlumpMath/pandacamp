@@ -8,7 +8,7 @@ from Types import *
 from Switchers import *
 from copy import copy
 import sys
-from FRP import wait
+from FRP import localTimeIs
 
 # Every object uses SignalRef objects to hold reactive attributes.  Each of these has
 # a slot name and a type.  Since we don't have type inference, you have to declare the
@@ -76,7 +76,7 @@ class Handle:
         # Add this to the list of objects currently in the world
         g.newModels.append(self)
         if duration != 0:
-            self.react1(wait(duration), lambda m, v: m.exit())
+            self.react1(localTimeIs(duration), lambda m, v: m.exit())
 
     def str(self):
         return self.name
