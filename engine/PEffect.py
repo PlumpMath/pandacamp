@@ -47,7 +47,6 @@ class PEffect(Handle):
     pid = 1
     def __init__(self, particleFn, name = None,
                hpr = None, position = None,
-
                 size = None,
                 duration = 0, ** a):
 
@@ -65,9 +64,7 @@ class PEffect(Handle):
 
 
 
-        self.__dict__['position'] = newSignalRef(self, 'position', P3Type)
-#        self.__dict__['color'] = newSignalRefd(self, 'color', ColorType,color)
-
+        self.__dict__['position'] = newSignalRefd(self, 'position', P3Type, P3(0,0,0))
         self.__dict__['hpr'] = newSignalRefd(self, 'hpr', HPRType, HPR(0,0,0))
         self.__dict__['size'] = newSignalRefd(self, 'size', numType, 1)
         if size is not None:
@@ -122,6 +119,7 @@ class PEffect(Handle):
         self.d.model.softStart()
 
     def reparentTo(self, handle):
+        print "Reparent"
         p = self.d.model
         p.reparentTo(handle.d.model)
 

@@ -389,7 +389,9 @@ class RVar(CachedSignal):
     def sub(self, val):
         self.value = self.value - val;
     def times(self, val):
-        self.value = self.value * val;
+        self.value = self.value * val
+    def now(self):
+        return self.value
 
 
 def var(init):
