@@ -58,7 +58,7 @@ class Model(Handle):
         if name is None:
             name = fileName  #  Should parse off the directories
         Handle.__init__(self, name = name, duration = duration)
-        mFile = fileSearch(fileName, "models")
+        mFile = fileSearch(fileName, "models",["egg"])
         if mFile is None:
             print "Can't find model" + str(fileName)
             mFile = Filename("panda-model.egg.pz")
@@ -77,9 +77,6 @@ class Model(Handle):
         localPosition = mParams["localPosition"]
         localSize = mParams["localSize"]
         localOrientation = mParams["localOrientation"]
-        animations = mParams["animations"]  # Should remove this from the .model
-        defaultAnimation = mParams["defaultAnimation"]  # Should remove this from the .model
-        frame = mParams["frame"]   # Should remove this from the .model
         cRadius = mParams["cRadius"]
         cTop = mParams["cTop"]
         cFloor = mParams["cFloor"]
