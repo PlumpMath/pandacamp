@@ -42,5 +42,7 @@ class When:
                 s1.append(s)
         self.handle.d.switches = s1
     return switched
-  def sname():
+  def sname(self):
     return self.handle.name + "." + self.sname
+  def getRefNum(self):
+      return -1

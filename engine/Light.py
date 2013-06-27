@@ -25,7 +25,6 @@ class PLight(Handle):
     def refresh(self):
         Handle.refresh(self)
         c = self.__dict__['color'].now()
-        print str(c)
         self.d.plight.setColor(c.toVBase4())
         p = self.__dict__['position'].now()
         self.d.light.setPos(p.x, p.y, p.z)

@@ -247,6 +247,8 @@ class SignalRef(Signal):
         if not self.d.sigtype.implies(sigType):
             signalTypeError(self.d.slot, self.d.handle.name, self.d.sigtype, sigType)
         self.d.active = self.signal.siginit(ctxt)
+    def getRefNum(self):
+        return self.d.refnum
     def siginit(self, context):
         return self
 # Two cases here:
@@ -289,7 +291,7 @@ def undefinedRef(x):
 def containsRef(l, r):
     n = r.d.refnum
     for ref in l:
-        if ref.d.refnum == n:
+        if ref.getRefNum() == n:
             return True
     return False
 
